@@ -1005,7 +1005,7 @@ Rules:
                 shape: BoxShape.circle,
               ),
               alignment: Alignment.center,
-              child: const Text('🎉', style: TextStyle(fontSize: 18)),
+              child: const Text('👩‍🍳', style: TextStyle(fontSize: 18)),
             ),
             const SizedBox(width: 12),
             const Expanded(
@@ -1357,7 +1357,7 @@ class _BotShell extends StatelessWidget {
               border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
             ),
             alignment: Alignment.center,
-            child: const Text('🎉', style: TextStyle(fontSize: 16)),
+            child: const Text('👩‍🍳', style: TextStyle(fontSize: 16)),
           ),
           const SizedBox(width: 10),
           Expanded(child: child),
