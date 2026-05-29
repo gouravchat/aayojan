@@ -958,89 +958,219 @@ export default function AayojanApp(){
             {!regSuccess?<>
               <div style={{textAlign:"center",marginBottom:28}}>
                 <span style={{fontSize:44}}>👨‍🍳</span>
-                <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:26,fontWeight:700,color:"#1f2937",marginTop:10,marginBottom:6}}>Register Your Catering Business</h2>
-                <p style={{fontSize:13,color:"#6b7280"}}>Join Newtown's fastest-growing caterer network</p>
+                <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:26,fontWeight:700,color:"var(--text-primary)",marginTop:10,marginBottom:6}}>Register Your Catering Business</h2>
+                <p style={{fontSize:13,color:"var(--text-secondary)"}}>Join Newtown's fastest-growing caterer network</p>
               </div>
               <div style={{...S.card,padding:"28px 32px"}}>
-                <div className="form-grid" style={S.formGrid}>
-                  {[["Business Name *","name","e.g. Kolkata Grand Feast"],["Owner / Manager *","ownerName","Full name"]].map(([lbl,key,ph])=>(
-                    <div key={key} style={S.fieldWrap}><label style={S.fieldLabel}>{lbl}</label>
-                      <input style={{...S.inp2,borderColor:regErrors[key]?"#ef4444":"#e5e7eb"}} value={regForm[key]} onChange={e=>setRegForm({...regForm,[key]:e.target.value})} placeholder={ph}/>
-                      {regErrors[key]&&<div style={{fontSize:11,color:"#ef4444"}}>{regErrors[key]}</div>}
-                    </div>
+
+                {/* Step indicator */}
+                <div style={{display:"flex",gap:6,marginBottom:20}}>
+                  {["Basic Info","Services","Capacity & Pricing","Menu & Extras"].map((s,i)=>(
+                    <button key={s} onClick={()=>setRegStep(i)} style={{flex:1,padding:"8px 4px",borderRadius:8,border:`1.5px solid ${regStep===i?"#c0392b":"var(--border-default)"}`,background:regStep===i?"#c0392b":i<regStep?"var(--bg-green-light)":"var(--bg-card)",color:regStep===i?"#fff":i<regStep?"#16a34a":"var(--text-secondary)",fontSize:11,fontWeight:regStep===i?700:500,cursor:"pointer",transition:"all 0.2s"}}>
+                      {i<regStep?"✓ ":""}{s}
+                    </button>
                   ))}
-                  <div style={S.fieldWrap}><label style={S.fieldLabel}>WhatsApp Number *</label>
-                    <div style={{display:"flex",border:`1px solid ${regErrors.phone?"#ef4444":"#e5e7eb"}`,borderRadius:9,overflow:"hidden"}}>
-                      <div style={{padding:"11px 10px",background:"#f9fafb",color:"#6b7280",fontSize:12,borderRight:"1px solid #e5e7eb",whiteSpace:"nowrap"}}>+91</div>
-                      <input style={{...S.inp2,border:"none",borderRadius:0,flex:1}} type="tel" maxLength={10} value={regForm.phone} onChange={e=>setRegForm({...regForm,phone:e.target.value.replace(/\D/g,"")})} placeholder="10-digit WhatsApp number"/>
-                    </div>
-                    {regErrors.phone&&<div style={{fontSize:11,color:"#ef4444"}}>{regErrors.phone}</div>}
-                    <div style={{fontSize:11,color:"#9ca3af",marginTop:3}}>📲 Hidden from customers. Quote requests via WhatsApp.</div>
-                  </div>
-                  <div style={S.fieldWrap}><label style={S.fieldLabel}>Email *</label>
-                    <input style={{...S.inp2,borderColor:regErrors.email?"#ef4444":"#e5e7eb"}} type="email" value={regForm.email} onChange={e=>setRegForm({...regForm,email:e.target.value})} placeholder="business@email.com"/>
-                    {regErrors.email&&<div style={{fontSize:11,color:"#ef4444"}}>{regErrors.email}</div>}
-                  </div>
-                  <div style={{...S.fieldWrap,gridColumn:"1 / -1"}}><label style={S.fieldLabel}>Full Address *</label>
-                    <input style={{...S.inp2,borderColor:regErrors.address?"#ef4444":"#e5e7eb"}} value={regForm.address} onChange={e=>setRegForm({...regForm,address:e.target.value})} placeholder="Plot/Flat No., Block/Area, Street"/>
-                    {regErrors.address&&<div style={{fontSize:11,color:"#ef4444"}}>{regErrors.address}</div>}
-                  </div>
-                  <div style={S.fieldWrap}><label style={S.fieldLabel}>Pincode *</label>
-                    <input style={{...S.inp2,borderColor:regErrors.pincode?"#ef4444":"#e5e7eb"}} maxLength={6} value={regForm.pincode} onChange={e=>setRegForm({...regForm,pincode:e.target.value.replace(/\D/g,"")})} placeholder="e.g. 700156"/>
-                    {regErrors.pincode&&<div style={{fontSize:11,color:"#ef4444"}}>{regErrors.pincode}</div>}
-                    <div style={{fontSize:10,color:"#9ca3af",marginTop:2}}>700156, 700157, 700135, 700161, 700136, 700059, 700091, 700105, 700107, 700160</div>
-                  </div>
-                  <div style={S.fieldWrap}><label style={S.fieldLabel}>Price Range</label>
-                    <div style={{display:"flex",gap:6}}>
-                      {["₹","₹₹","₹₹₹","₹₹₹₹"].map(p=><button key={p} onClick={()=>setRegForm({...regForm,priceRange:p})} style={{padding:"7px 12px",borderRadius:7,border:"1px solid",borderColor:regForm.priceRange===p?"#c0392b":"#e5e7eb",background:regForm.priceRange===p?"#c0392b":"#fff",color:regForm.priceRange===p?"#fff":"#6b7280",fontSize:12,fontWeight:600,cursor:"pointer"}}>{p}</button>)}
-                    </div>
-                  </div>
-                  <div style={{...S.fieldWrap,gridColumn:"1 / -1"}}><label style={S.fieldLabel}>Service Types *</label>
-                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-                      {Object.values(SVC).map(svc=>(
-                        <button key={svc.id} onClick={()=>setRegForm(prev=>({...prev,serviceTypes:prev.serviceTypes.includes(svc.id)?prev.serviceTypes.filter(x=>x!==svc.id):[...prev.serviceTypes,svc.id]}))
-                        } style={{display:"flex",alignItems:"center",gap:10,padding:"12px",border:`2px solid ${regForm.serviceTypes.includes(svc.id)?svc.color:svc.border}`,borderRadius:10,cursor:"pointer",background:regForm.serviceTypes.includes(svc.id)?svc.grad:"#fff"}}>
-                          <span style={{fontSize:20}}>{svc.icon}</span>
-                          <div style={{textAlign:"left",flex:1}}><div style={{fontSize:13,fontWeight:700,color:regForm.serviceTypes.includes(svc.id)?svc.color:"#374151"}}>{svc.label}</div><div style={{fontSize:10,color:"#9ca3af"}}>{svc.tagline}</div></div>
-                          {regForm.serviceTypes.includes(svc.id)&&<span style={{color:svc.color,fontSize:14}}>✓</span>}
-                        </button>
-                      ))}
-                    </div>
-                    {regErrors.serviceTypes&&<div style={{fontSize:11,color:"#ef4444"}}>{regErrors.serviceTypes}</div>}
-                  </div>
-                  <div style={{...S.fieldWrap,gridColumn:"1 / -1"}}><label style={S.fieldLabel}>Cuisine Specialties *</label>
-                    <div style={{display:"flex",flexWrap:"wrap",gap:7}}>
-                      {ALL_CUISINES.map(c=><button key={c} onClick={()=>setRegForm(prev=>({...prev,cuisineSpecialties:prev.cuisineSpecialties.includes(c)?prev.cuisineSpecialties.filter(x=>x!==c):[...prev.cuisineSpecialties,c]}))} style={{padding:"5px 12px",borderRadius:16,border:"1px solid",borderColor:regForm.cuisineSpecialties.includes(c)?"#c0392b":"#e5e7eb",background:regForm.cuisineSpecialties.includes(c)?"#fff5f5":"#fff",color:regForm.cuisineSpecialties.includes(c)?"#c0392b":"#6b7280",fontSize:12,cursor:"pointer"}}>
-                        {regForm.cuisineSpecialties.includes(c)&&"✓ "}{c}
-                      </button>)}
-                    </div>
-                    {regErrors.cuisineSpecialties&&<div style={{fontSize:11,color:"#ef4444"}}>{regErrors.cuisineSpecialties}</div>}
-                  </div>
-                  <div style={{...S.fieldWrap,gridColumn:"1 / -1"}}><label style={S.fieldLabel}>Event Specialties *</label>
-                    <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
-                      {["Wedding","Party","Corporate","Religious"].map(sp=><button key={sp} onClick={()=>setRegForm(prev=>({...prev,specialty:prev.specialty.includes(sp)?prev.specialty.filter(s=>s!==sp):[...prev.specialty,sp]}))} style={{padding:"6px 14px",borderRadius:16,border:"1px solid",borderColor:regForm.specialty.includes(sp)?"#c0392b":"#e5e7eb",background:regForm.specialty.includes(sp)?"#c0392b":"#fff",color:regForm.specialty.includes(sp)?"#fff":"#6b7280",fontSize:12,fontWeight:600,cursor:"pointer"}}>{sp}</button>)}
-                    </div>
-                    {regErrors.specialty&&<div style={{fontSize:11,color:"#ef4444"}}>{regErrors.specialty}</div>}
-                  </div>
                 </div>
-                <div style={{background:"#fff5f5",border:"1px solid #fca5a5",borderRadius:10,padding:"12px 16px",fontSize:12,color:"#6b7280",lineHeight:1.6,marginTop:20}}>🔒 Your phone number is never shown to customers. Aayojan acts as the secure intermediary.</div>
+
+                {/* Step 0: Basic Info */}
+                {regStep===0&&(
+                  <div>
+                    <div className="form-grid" style={S.formGrid}>
+                      {[["Business Name *","name","e.g. Kolkata Grand Feast"],["Owner / Manager *","ownerName","Full name"]].map(([lbl,key,ph])=>(
+                        <div key={key} style={S.fieldWrap}><label style={S.fieldLabel}>{lbl}</label>
+                          <input style={{...S.inp2,borderColor:regErrors[key]?"#ef4444":"var(--border-default)"}} value={regForm[key]} onChange={e=>setRegForm({...regForm,[key]:e.target.value})} placeholder={ph}/>
+                          {regErrors[key]&&<div style={{fontSize:11,color:"#ef4444"}}>{regErrors[key]}</div>}
+                        </div>
+                      ))}
+                      <div style={S.fieldWrap}><label style={S.fieldLabel}>WhatsApp Number *</label>
+                        <div style={{display:"flex",border:`1px solid ${regErrors.phone?"#ef4444":"var(--border-default)"}`,borderRadius:9,overflow:"hidden"}}>
+                          <div style={{padding:"11px 10px",background:"var(--bg-hover)",color:"var(--text-secondary)",fontSize:12,borderRight:"1px solid var(--border-default)",whiteSpace:"nowrap"}}>+91</div>
+                          <input style={{...S.inp2,border:"none",borderRadius:0,flex:1}} type="tel" maxLength={10} value={regForm.phone} onChange={e=>setRegForm({...regForm,phone:e.target.value.replace(/\D/g,"")})} placeholder="10-digit WhatsApp number"/>
+                        </div>
+                        {regErrors.phone&&<div style={{fontSize:11,color:"#ef4444"}}>{regErrors.phone}</div>}
+                        <div style={{fontSize:11,color:"var(--text-muted)",marginTop:3}}>📲 Hidden from customers. Quote requests via WhatsApp.</div>
+                      </div>
+                      <div style={S.fieldWrap}><label style={S.fieldLabel}>Email *</label>
+                        <input style={{...S.inp2,borderColor:regErrors.email?"#ef4444":"var(--border-default)"}} type="email" value={regForm.email} onChange={e=>setRegForm({...regForm,email:e.target.value})} placeholder="business@email.com"/>
+                        {regErrors.email&&<div style={{fontSize:11,color:"#ef4444"}}>{regErrors.email}</div>}
+                      </div>
+                      <div style={{...S.fieldWrap,gridColumn:"1 / -1"}}><label style={S.fieldLabel}>Full Address *</label>
+                        <input style={{...S.inp2,borderColor:regErrors.address?"#ef4444":"var(--border-default)"}} value={regForm.address} onChange={e=>setRegForm({...regForm,address:e.target.value})} placeholder="Plot/Flat No., Block/Area, Street"/>
+                        {regErrors.address&&<div style={{fontSize:11,color:"#ef4444"}}>{regErrors.address}</div>}
+                      </div>
+                      <div style={S.fieldWrap}><label style={S.fieldLabel}>Pincode *</label>
+                        <input style={{...S.inp2,borderColor:regErrors.pincode?"#ef4444":"var(--border-default)"}} maxLength={6} value={regForm.pincode} onChange={e=>setRegForm({...regForm,pincode:e.target.value.replace(/\D/g,"")})} placeholder="e.g. 700156"/>
+                        {regErrors.pincode&&<div style={{fontSize:11,color:"#ef4444"}}>{regErrors.pincode}</div>}
+                        <div style={{fontSize:10,color:"var(--text-muted)",marginTop:2}}>700156, 700157, 700135, 700161, 700136, 700059, 700091, 700105, 700107, 700160</div>
+                      </div>
+                    </div>
+                    <div style={{marginTop:16}}>
+                      <label style={S.fieldLabel}>FSSAI License No. (optional but boosts ranking)</label>
+                      <input style={S.inp2} value={regForm.fssaiLicense} onChange={e=>setRegForm({...regForm,fssaiLicense:e.target.value})} placeholder="14-digit FSSAI number"/>
+                    </div>
+                    <div style={{display:"flex",gap:12,marginTop:12}}>
+                      <div style={{flex:1}}><label style={S.fieldLabel}>Years in Business</label>
+                        <select value={regForm.yearsInBusiness} onChange={e=>setRegForm({...regForm,yearsInBusiness:e.target.value})} style={{...S.inp2,width:"100%"}}>
+                          <option value="">Select</option>{["<1 year","1–3 years","3–5 years","5–10 years","10+ years"].map(y=><option key={y} value={y}>{y}</option>)}
+                        </select>
+                      </div>
+                      <div style={{flex:1}}><label style={S.fieldLabel}>Team Size</label>
+                        <select value={regForm.teamSize} onChange={e=>setRegForm({...regForm,teamSize:e.target.value})} style={{...S.inp2,width:"100%"}}>
+                          <option value="">Select</option>{["1–5","5–10","10–20","20–50","50+"].map(t=><option key={t} value={t}>{t}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <div style={{marginTop:16}}>
+                      <label style={S.fieldLabel}>Business Description (used for AI matching)</label>
+                      <textarea value={regForm.description} onChange={e=>setRegForm({...regForm,description:e.target.value})} placeholder="Describe your catering business, specialties, USP, notable clients..." style={{...S.inp2,minHeight:80,resize:"vertical",width:"100%"}}/>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 1: Services */}
+                {regStep===1&&(
+                  <div>
+                    <div style={{marginBottom:16}}>
+                      <label style={S.fieldLabel}>Event Types *</label>
+                      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>
+                        {EVENT_TYPES.map(et=><button key={et.id} onClick={()=>setRegForm(f=>({...f,specialty:f.specialty.includes(et.id)?f.specialty.filter(s=>s!==et.id):[...f.specialty,et.id]}))} style={{padding:"8px 16px",borderRadius:10,border:`2px solid ${regForm.specialty.includes(et.id)?"#c0392b":"var(--border-default)"}`,background:regForm.specialty.includes(et.id)?"var(--bg-accent-light)":"var(--bg-card)",color:regForm.specialty.includes(et.id)?"var(--text-accent)":"var(--text-secondary)",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",gap:6}}><span>{et.icon}</span>{et.label}</button>)}
+                      </div>
+                      {regErrors.specialty&&<div style={{fontSize:11,color:"#ef4444",marginTop:4}}>{regErrors.specialty}</div>}
+                    </div>
+                    <div style={{marginBottom:16}}>
+                      <label style={S.fieldLabel}>Cuisine Specialties *</label>
+                      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>
+                        {ALL_CUISINES.map(c=><button key={c} onClick={()=>setRegForm(f=>({...f,cuisineSpecialties:f.cuisineSpecialties.includes(c)?f.cuisineSpecialties.filter(s=>s!==c):[...f.cuisineSpecialties,c]}))} style={{padding:"6px 14px",borderRadius:10,border:`1.5px solid ${regForm.cuisineSpecialties.includes(c)?"#c0392b":"var(--border-default)"}`,background:regForm.cuisineSpecialties.includes(c)?"var(--bg-accent-light)":"var(--bg-card)",color:regForm.cuisineSpecialties.includes(c)?"var(--text-accent)":"var(--text-secondary)",fontSize:12,cursor:"pointer"}}>{c}</button>)}
+                      </div>
+                      {regErrors.cuisineSpecialties&&<div style={{fontSize:11,color:"#ef4444",marginTop:4}}>{regErrors.cuisineSpecialties}</div>}
+                    </div>
+                    <div style={{marginBottom:16}}>
+                      <label style={S.fieldLabel}>Service Types *</label>
+                      <div style={{display:"flex",gap:8,marginTop:6}}>
+                        {Object.values(SVC).map(svc=><button key={svc.id} onClick={()=>setRegForm(f=>({...f,serviceTypes:f.serviceTypes.includes(svc.id)?f.serviceTypes.filter(s=>s!==svc.id):[...f.serviceTypes,svc.id]}))} style={{flex:1,padding:"14px",borderRadius:12,border:`2px solid ${regForm.serviceTypes.includes(svc.id)?svc.color:"var(--border-default)"}`,background:regForm.serviceTypes.includes(svc.id)?svc.grad:"var(--bg-card)",cursor:"pointer",textAlign:"center"}}><div style={{fontSize:22}}>{svc.icon}</div><div style={{fontSize:12,fontWeight:700,color:svc.color,marginTop:4}}>{svc.label}</div></button>)}
+                      </div>
+                      {regErrors.serviceTypes&&<div style={{fontSize:11,color:"#ef4444",marginTop:4}}>{regErrors.serviceTypes}</div>}
+                    </div>
+                    <div>
+                      <label style={S.fieldLabel}>Delivery Coverage (Pincodes)</label>
+                      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>
+                        {Object.entries(PINCODE_COORDS).map(([pin,data])=><button key={pin} onClick={()=>setRegForm(f=>({...f,deliveryPincodes:f.deliveryPincodes.includes(pin)?f.deliveryPincodes.filter(p=>p!==pin):[...f.deliveryPincodes,pin]}))} style={{padding:"6px 12px",borderRadius:8,border:`1.5px solid ${regForm.deliveryPincodes.includes(pin)?"#c0392b":"var(--border-default)"}`,background:regForm.deliveryPincodes.includes(pin)?"var(--bg-accent-light)":"var(--bg-card)",color:regForm.deliveryPincodes.includes(pin)?"var(--text-accent)":"var(--text-secondary)",fontSize:11,cursor:"pointer"}}>{pin} · {data.area}</button>)}
+                      </div>
+                      <div style={{fontSize:11,color:"var(--text-muted)",marginTop:4}}>Leave empty = serves all areas</div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 2: Capacity & Pricing */}
+                {regStep===2&&(
+                  <div>
+                    <div style={{display:"flex",gap:12,marginBottom:16}}>
+                      <div style={{flex:1}}>
+                        <label style={S.fieldLabel}>Minimum Guests</label>
+                        <input type="number" style={S.inp2} value={regForm.minGuests} onChange={e=>setRegForm({...regForm,minGuests:parseInt(e.target.value)||1})} min={1}/>
+                      </div>
+                      <div style={{flex:1}}>
+                        <label style={S.fieldLabel}>Maximum Guests</label>
+                        <input type="number" style={S.inp2} value={regForm.maxGuests} onChange={e=>setRegForm({...regForm,maxGuests:parseInt(e.target.value)||500})} min={10}/>
+                      </div>
+                    </div>
+                    <div style={{display:"flex",gap:12,marginBottom:16}}>
+                      <div style={{flex:1}}>
+                        <label style={S.fieldLabel}>Price per Plate — MIN (₹)</label>
+                        <input type="number" style={S.inp2} value={regForm.pricePerPlateMin} onChange={e=>setRegForm({...regForm,pricePerPlateMin:parseInt(e.target.value)||100})} min={50}/>
+                      </div>
+                      <div style={{flex:1}}>
+                        <label style={S.fieldLabel}>Price per Plate — MAX (₹)</label>
+                        <input type="number" style={S.inp2} value={regForm.pricePerPlateMax} onChange={e=>setRegForm({...regForm,pricePerPlateMax:parseInt(e.target.value)||2000})} min={100}/>
+                      </div>
+                    </div>
+                    {regErrors.pricing&&<div style={{fontSize:11,color:"#ef4444",marginBottom:8}}>{regErrors.pricing}</div>}
+                    <div style={{display:"flex",gap:12,marginBottom:16}}>
+                      <div style={{flex:1}}>
+                        <label style={S.fieldLabel}>Preparation Time</label>
+                        <select value={regForm.turnaround} onChange={e=>setRegForm({...regForm,turnaround:e.target.value})} style={{...S.inp2,width:"100%"}}>
+                          {["1–2 hrs","2–3 hrs","3–4 hrs","4–6 hrs","Same day","Next day"].map(t=><option key={t} value={t}>{t}</option>)}
+                        </select>
+                      </div>
+                      <div style={{flex:1}}>
+                        <label style={S.fieldLabel}>Price Tier</label>
+                        <select value={regForm.priceRange} onChange={e=>setRegForm({...regForm,priceRange:e.target.value})} style={{...S.inp2,width:"100%"}}>
+                          {["₹ (Budget)","₹₹ (Moderate)","₹₹₹ (Premium)","₹₹₹₹ (Luxury)"].map(p=><option key={p} value={p.split(" ")[0]}>{p}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <div style={{marginBottom:16}}>
+                      <label style={S.fieldLabel}>Available Days</label>
+                      <div style={{display:"flex",gap:6,marginTop:6}}>
+                        {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d=><button key={d} onClick={()=>setRegForm(f=>({...f,availableDays:f.availableDays.includes(d)?f.availableDays.filter(x=>x!==d):[...f.availableDays,d]}))} style={{flex:1,padding:"8px 4px",borderRadius:8,border:`1.5px solid ${regForm.availableDays.includes(d)?"#c0392b":"var(--border-default)"}`,background:regForm.availableDays.includes(d)?"var(--bg-accent-light)":"var(--bg-card)",color:regForm.availableDays.includes(d)?"var(--text-accent)":"var(--text-muted)",fontSize:11,fontWeight:600,cursor:"pointer"}}>{d}</button>)}
+                      </div>
+                    </div>
+                    <div>
+                      <label style={S.fieldLabel}>Cancellation Policy</label>
+                      <select value={regForm.cancellationPolicy} onChange={e=>setRegForm({...regForm,cancellationPolicy:e.target.value})} style={{...S.inp2,width:"100%"}}>
+                        {["24hrs","48hrs","72hrs","No refund","Flexible"].map(c=><option key={c} value={c}>{c} notice required</option>)}
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 3: Menu & Extras */}
+                {regStep===3&&(
+                  <div>
+                    <div style={{marginBottom:16}}>
+                      <label style={S.fieldLabel}>Signature Dishes (top 5–10, comma separated)</label>
+                      <textarea value={regForm.signatureDishes} onChange={e=>setRegForm({...regForm,signatureDishes:e.target.value})} placeholder="Kosha Mangsho, Chingri Malai Curry, Luchi-Alur Dom, Biryani, Mishti Doi..." style={{...S.inp2,minHeight:60,resize:"vertical",width:"100%"}}/>
+                      <div style={{fontSize:11,color:"var(--text-muted)",marginTop:2}}>These are used for AI search & menu matching</div>
+                    </div>
+                    <div style={{marginBottom:16}}>
+                      <label style={S.fieldLabel}>Menu Categories Offered</label>
+                      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>
+                        {Object.keys(MENU_ITEMS).map(cat=><button key={cat} onClick={()=>setRegForm(f=>({...f,menuHighlights:f.menuHighlights.includes(cat)?f.menuHighlights.filter(c=>c!==cat):[...f.menuHighlights,cat]}))} style={{padding:"6px 14px",borderRadius:10,border:`1.5px solid ${regForm.menuHighlights.includes(cat)?"#c0392b":"var(--border-default)"}`,background:regForm.menuHighlights.includes(cat)?"var(--bg-accent-light)":"var(--bg-card)",color:regForm.menuHighlights.includes(cat)?"var(--text-accent)":"var(--text-secondary)",fontSize:12,cursor:"pointer"}}>{cat}</button>)}
+                      </div>
+                    </div>
+                    <div style={{marginBottom:16}}>
+                      <label style={S.fieldLabel}>Service Features</label>
+                      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginTop:6}}>
+                        {[{key:"vegOnly",label:"🥬 Vegetarian Only",desc:"Only serves veg food"},{key:"hasLiveCounter",label:"🔥 Live Counters",desc:"Provides live cooking stations"},{key:"providesDecor",label:"🎊 Decoration",desc:"Provides event decoration"},{key:"providesStaff",label:"👨‍🍳 Staff Included",desc:"Serving staff provided"}].map(f=>(
+                          <button key={f.key} onClick={()=>setRegForm(r=>({...r,[f.key]:!r[f.key]}))} style={{padding:"12px",borderRadius:10,border:`2px solid ${regForm[f.key]?"#c0392b":"var(--border-default)"}`,background:regForm[f.key]?"var(--bg-accent-light)":"var(--bg-card)",cursor:"pointer",textAlign:"left"}}>
+                            <div style={{fontSize:13,fontWeight:regForm[f.key]?700:500,color:regForm[f.key]?"var(--text-accent)":"var(--text-primary)"}}>{f.label}</div>
+                            <div style={{fontSize:11,color:"var(--text-muted)",marginTop:2}}>{f.desc}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label style={S.fieldLabel}>Payment Modes Accepted</label>
+                      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>
+                        {["Cash","UPI","Card","Bank Transfer","Cheque"].map(m=><button key={m} onClick={()=>setRegForm(f=>({...f,paymentModes:f.paymentModes.includes(m)?f.paymentModes.filter(x=>x!==m):[...f.paymentModes,m]}))} style={{padding:"6px 14px",borderRadius:10,border:`1.5px solid ${regForm.paymentModes.includes(m)?"#c0392b":"var(--border-default)"}`,background:regForm.paymentModes.includes(m)?"var(--bg-accent-light)":"var(--bg-card)",color:regForm.paymentModes.includes(m)?"var(--text-accent)":"var(--text-secondary)",fontSize:12,cursor:"pointer"}}>{m}</button>)}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Navigation */}
+                <div style={{background:"var(--bg-accent-light)",border:"1px solid var(--border-accent)",borderRadius:10,padding:"12px 16px",fontSize:12,color:"var(--text-secondary)",lineHeight:1.6,marginTop:20}}>🔒 Your phone number is never shown to customers. Aayojan acts as the secure intermediary.</div>
                 <div style={{display:"flex",gap:10,marginTop:18}}>
-                  <button onClick={()=>navigate("landing")} style={S.secondaryBtn}>← Back</button>
-                  <button onClick={submitReg} style={{...S.primaryBtn,flex:1,marginTop:0}}>Register Business 🚀</button>
+                  {regStep===0?<button onClick={()=>navigate("landing")} style={S.secondaryBtn}>← Home</button>:<button onClick={()=>setRegStep(s=>s-1)} style={{...S.secondaryBtn,flex:1}}>← Back</button>}
+                  {regStep<3?(
+                    <button onClick={()=>setRegStep(s=>s+1)} style={{...S.primaryBtn,flex:1,marginTop:0}}>Next →</button>
+                  ):(
+                    <button onClick={submitReg} style={{...S.primaryBtn,flex:1,marginTop:0}}>Register Business 🚀</button>
+                  )}
                 </div>
               </div>
             </>:(
               <div style={{...S.card,textAlign:"center",padding:"32px"}}>
                 <div style={{fontSize:56}}>🎉</div>
-                <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:24,fontWeight:700,color:"#1f2937",margin:"10px 0 6px"}}>You're Registered!</h2>
-                <p style={{color:"#6b7280",marginBottom:20}}>Welcome to Aayojan, <strong style={{color:"#c0392b"}}>{regForm.name}</strong></p>
-                <div style={{background:"#fff5f5",border:"1px solid #fde8d8",borderRadius:12,padding:"16px",textAlign:"left",marginBottom:20}}>
-                  {[["📍 Area",PINCODE_COORDS[regForm.pincode]?.area||regForm.pincode],["🛎️ Services",regForm.serviceTypes.map(t=>SVC[t].label).join(", ")],["🍽️ Cuisines",regForm.cuisineSpecialties.join(", ")],["📲 WhatsApp",`+91 ${String(regForm.phone).slice(0,5)}••••• (hidden)`]].map(([l,v])=>(
-                    <div key={l} style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:8,color:"#6b7280"}}><span>{l}</span><span style={{textAlign:"right",maxWidth:"60%",color:"#374151"}}>{v}</span></div>
+                <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:24,fontWeight:700,color:"var(--text-primary)",margin:"10px 0 6px"}}>You're Registered!</h2>
+                <p style={{color:"var(--text-secondary)",marginBottom:20}}>Welcome to Aayojan, <strong style={{color:"#c0392b"}}>{regForm.name}</strong></p>
+                <div style={{background:"var(--bg-accent-light)",border:"1px solid var(--border-light)",borderRadius:12,padding:"16px",textAlign:"left",marginBottom:20}}>
+                  {[["📍 Area",PINCODE_COORDS[regForm.pincode]?.area||regForm.pincode],["🛎️ Services",regForm.serviceTypes.map(t=>SVC[t].label).join(", ")],["🍽️ Cuisines",regForm.cuisineSpecialties.join(", ")],["📲 WhatsApp",`+91 ${String(regForm.phone).slice(0,5)}••••• (hidden)`],["📊 Capacity",`${regForm.minGuests}–${regForm.maxGuests} guests`],["💰 Price Range",`₹${regForm.pricePerPlateMin}–₹${regForm.pricePerPlateMax}/plate`],["🔖 FSSAI",regForm.fssaiLicense||"Not provided"]].map(([l,v])=>(
+                    <div key={l} style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:8,color:"var(--text-secondary)"}}><span>{l}</span><span style={{textAlign:"right",maxWidth:"60%",color:"var(--text-primary)"}}>{v}</span></div>
                   ))}
                 </div>
                 <div style={{display:"flex",gap:10}}>
-                  <button onClick={()=>{setRegSuccess(false);setRegForm({name:"",ownerName:"",phone:"",email:"",address:"",pincode:"",specialty:[],cuisineSpecialties:[],serviceTypes:[],priceRange:"₹₹",turnaround:"2–3 hrs"});}} style={S.secondaryBtn}>Register Another</button>
+                  <button onClick={()=>{setRegSuccess(false);setRegStep(0);setRegForm({name:"",ownerName:"",phone:"",email:"",address:"",pincode:"",specialty:[],cuisineSpecialties:[],serviceTypes:[],priceRange:"₹₹",turnaround:"2–3 hrs",minGuests:10,maxGuests:500,pricePerPlateMin:150,pricePerPlateMax:800,fssaiLicense:"",yearsInBusiness:"",teamSize:"",signatureDishes:"",description:"",deliveryPincodes:[],menuHighlights:[],vegOnly:false,hasLiveCounter:false,providesDecor:false,providesStaff:true,paymentModes:["Cash","UPI"],cancellationPolicy:"48hrs",availableDays:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]});}} style={S.secondaryBtn}>Register Another</button>
                   <button onClick={()=>navigate("landing")} style={{...S.primaryBtn,marginTop:0,flex:1}}>Go to Home →</button>
                 </div>
               </div>
