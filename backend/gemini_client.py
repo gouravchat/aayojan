@@ -39,6 +39,7 @@ class GeminiClient:
             system_instruction=system_prompt or "You are AayojanAI, a helpful catering assistant.",
             temperature=0.7,
             max_output_tokens=1000,
+            tools=[types.Tool(google_search=types.GoogleSearch())],
         )
 
         response = await asyncio.to_thread(
