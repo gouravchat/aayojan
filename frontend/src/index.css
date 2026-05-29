@@ -1,8 +1,113 @@
 /* Aayojan Responsive Overrides */
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap');
 
+/* ─── CSS Variables for Theming ─────────────────────────────────────────────── */
+:root {
+  --bg-primary: #fdf8f3;
+  --bg-secondary: #fef9f7;
+  --bg-card: #fff;
+  --bg-input: #fff;
+  --bg-header: rgba(255,249,247,0.95);
+  --bg-hover: #f9fafb;
+  --bg-accent-light: #fff5f5;
+  --bg-green-light: #f0fdf4;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --text-accent: #c0392b;
+  --border-light: #fde8d8;
+  --border-default: #e5e7eb;
+  --border-accent: #fca5a5;
+  --border-green: #bbf7d0;
+  --shadow-card: 0 4px 20px rgba(192,57,43,0.06);
+  --shadow-header: 0 1px 4px rgba(192,57,43,0.06);
+  --modal-overlay: rgba(0,0,0,0.4);
+  --chat-user-bg: linear-gradient(135deg,#c0392b,#e74c3c);
+  --chat-ai-bg: #f9fafb;
+  --chat-ai-border: #e5e7eb;
+  --chat-ai-text: #1f2937;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0f1117;
+  --bg-secondary: #1a1d27;
+  --bg-card: #1e2130;
+  --bg-input: #252838;
+  --bg-header: rgba(15,17,23,0.95);
+  --bg-hover: #252838;
+  --bg-accent-light: #2a1f2e;
+  --bg-green-light: #1a2e1f;
+  --text-primary: #e8eaed;
+  --text-secondary: #9aa0ac;
+  --text-muted: #6b7280;
+  --text-accent: #f87171;
+  --border-light: #2d3040;
+  --border-default: #2d3040;
+  --border-accent: #7f1d1d;
+  --border-green: #14532d;
+  --shadow-card: 0 4px 20px rgba(0,0,0,0.3);
+  --shadow-header: 0 1px 4px rgba(0,0,0,0.3);
+  --modal-overlay: rgba(0,0,0,0.7);
+  --chat-user-bg: linear-gradient(135deg,#991b1b,#b91c1c);
+  --chat-ai-bg: #252838;
+  --chat-ai-border: #2d3040;
+  --chat-ai-text: #e8eaed;
+}
+
 * { box-sizing:border-box; margin:0; padding:0; }
-body { background:#fdf8f3; font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; }
+body { background:var(--bg-primary); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; color:var(--text-primary); transition:background 0.3s ease, color 0.3s ease; }
+
+/* Dark mode transitions */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-default) !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Dark mode toggle button */
+.theme-toggle {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-card);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.theme-toggle:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* ─── Dark Mode Global Overrides ────────────────────────────────────────────── */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="dark"] button {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .hero-title span {
+  color: var(--text-primary) !important;
+}
+
+/* Smooth transitions */
+*, *::before, *::after {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.15s ease, box-shadow 0.25s ease;
+}
 
 /* Mobile responsive */
 @media(max-width:768px){

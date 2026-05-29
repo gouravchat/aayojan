@@ -274,46 +274,46 @@ function AayojanChatbot({onOrderCreated,user,onLoginRequired}){
 
   const renderText=(text)=>text.split('\n').map((line,i)=>{
     const parts=line.split(/(\*\*[^*]+\*\*)/g);
-    return(<span key={i}>{parts.map((p,j)=>p.startsWith('**')&&p.endsWith('**')?<strong key={j} style={{color:"#1f2937"}}>{p.slice(2,-2)}</strong>:<span key={j}>{p}</span>)}{i<text.split('\n').length-1&&<br/>}</span>);
+    return(<span key={i}>{parts.map((p,j)=>p.startsWith('**')&&p.endsWith('**')?<strong key={j} style={{color:"var(--text-primary)"}}>{p.slice(2,-2)}</strong>:<span key={j}>{p}</span>)}{i<text.split('\n').length-1&&<br/>}</span>);
   });
 
   return(
-    <div style={{background:"#fff",border:"1px solid #fde8d8",borderRadius:18,overflow:"hidden",boxShadow:"0 8px 30px rgba(192,57,43,0.12)",display:"flex",flexDirection:"column",height:"76vh",maxHeight:660}}>
+    <div style={{background:"var(--bg-card)",border:"1px solid var(--border-light)",borderRadius:18,overflow:"hidden",boxShadow:"0 8px 30px rgba(192,57,43,0.12)",display:"flex",flexDirection:"column",height:"76vh",maxHeight:660}}>
       <div style={{display:"flex",alignItems:"center",gap:12,padding:"14px 18px",background:"linear-gradient(135deg,#c0392b,#e74c3c)"}}>
         <div style={{width:40,height:40,borderRadius:"50%",background:"rgba(255,255,255,0.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>🤖</div>
         <div><div style={{fontWeight:800,color:"#fff",fontSize:15}}>Aayojan AI</div><div style={{fontSize:11,color:"rgba(255,255,255,0.8)",display:"flex",alignItems:"center",gap:4}}><span style={{width:6,height:6,borderRadius:"50%",background:"#4ade80",display:"inline-block"}}/>Online · Catering Expert</div></div>
         <div style={{marginLeft:"auto",fontSize:11,color:"rgba(255,255,255,0.7)",textAlign:"right"}}><div>Powered by</div><div style={{fontWeight:700,color:"#fff"}}>Gemini AI</div></div>
       </div>
-      <div style={{flex:1,overflowY:"auto",padding:"14px",display:"flex",flexDirection:"column",gap:0,background:"#fafafa"}}>
+      <div style={{flex:1,overflowY:"auto",padding:"14px",display:"flex",flexDirection:"column",gap:0,background:"var(--bg-secondary)"}}>
         {msgs.map((m,i)=>(
           <div key={i} style={{display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start",marginBottom:10}}>
             {m.role==="assistant"&&<div style={{width:26,height:26,borderRadius:"50%",background:"linear-gradient(135deg,#c0392b,#e74c3c)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,flexShrink:0,marginRight:8,alignSelf:"flex-end",marginBottom:2}}>🤖</div>}
-            <div style={{maxWidth:"82%",background:m.role==="user"?"linear-gradient(135deg,#c0392b,#e74c3c)":"#fff",color:m.role==="user"?"#fff":"#374151",borderRadius:m.role==="user"?"16px 16px 3px 16px":"16px 16px 16px 3px",padding:"10px 14px",fontSize:13,lineHeight:1.55,boxShadow:m.role==="assistant"?"0 1px 4px rgba(0,0,0,0.08)":"none",border:m.role==="assistant"?"1px solid #f3f4f6":"none"}}>
+            <div style={{maxWidth:"82%",background:m.role==="user"?"var(--chat-user-bg)":"var(--bg-card)",color:m.role==="user"?"#fff":"var(--text-primary)",borderRadius:m.role==="user"?"16px 16px 3px 16px":"16px 16px 16px 3px",padding:"10px 14px",fontSize:13,lineHeight:1.55,boxShadow:m.role==="assistant"?"0 1px 4px rgba(0,0,0,0.08)":"none",border:m.role==="assistant"?"1px solid var(--border-default)":"none"}}>
               {renderText(m.text)}
             </div>
           </div>
         ))}
-        {loading&&<div style={{display:"flex",gap:8,alignItems:"center"}}><div style={{width:26,height:26,borderRadius:"50%",background:"linear-gradient(135deg,#c0392b,#e74c3c)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,flexShrink:0,marginRight:8}}>🤖</div><div style={{background:"#fff",border:"1px solid #f3f4f6",borderRadius:"16px 16px 16px 3px",padding:"10px 14px",display:"flex",gap:4,boxShadow:"0 1px 4px rgba(0,0,0,0.08)"}}>{[0,1,2].map(i=><div key={i} style={{width:7,height:7,borderRadius:"50%",background:"#d1d5db",animation:`bounce 1.2s ease-in-out ${i*0.2}s infinite`}}/>)}</div></div>}
+        {loading&&<div style={{display:"flex",gap:8,alignItems:"center"}}><div style={{width:26,height:26,borderRadius:"50%",background:"linear-gradient(135deg,#c0392b,#e74c3c)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,flexShrink:0,marginRight:8}}>🤖</div><div style={{background:"var(--bg-card)",border:"1px solid var(--border-default)",borderRadius:"16px 16px 16px 3px",padding:"10px 14px",display:"flex",gap:4,boxShadow:"0 1px 4px rgba(0,0,0,0.08)"}}>{[0,1,2].map(i=><div key={i} style={{width:7,height:7,borderRadius:"50%",background:"var(--text-muted)",animation:`bounce 1.2s ease-in-out ${i*0.2}s infinite`}}/>)}</div></div>}
         {orderData&&!confirmed&&(
-          <div style={{background:"#fff",border:"2px solid #c0392b",borderRadius:14,padding:"14px",margin:"8px 0 8px 34px",boxShadow:"0 2px 12px rgba(192,57,43,0.1)"}}>
+          <div style={{background:"var(--bg-card)",border:"2px solid #c0392b",borderRadius:14,padding:"14px",margin:"8px 0 8px 34px",boxShadow:"0 2px 12px rgba(192,57,43,0.1)"}}>
             <div style={{fontSize:11,fontWeight:700,color:"#c0392b",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:10}}>📋 Order Summary — Ready?</div>
             {[["🛎️ Service",SVC[orderData.serviceType]?.label||orderData.serviceType],["🎊 Event",orderData.eventType],["👥 Guests",orderData.guestCount],["💰 Budget",`₹${orderData.perPlateBudget}/${orderData.serviceType==="full"?"plate":"portion"}`],["📍 Pincode",orderData.pincode],["🍽️ Menu",`${orderData.menuItems?.length||0} items`]].map(([lbl,val])=>(
-              <div key={lbl} style={{display:"flex",justifyContent:"space-between",marginBottom:6,fontSize:13}}><span style={{color:"#6b7280"}}>{lbl}</span><span style={{color:"#1f2937",fontWeight:600,textTransform:"capitalize"}}>{val}</span></div>
+              <div key={lbl} style={{display:"flex",justifyContent:"space-between",marginBottom:6,fontSize:13}}><span style={{color:"var(--text-secondary)"}}>{lbl}</span><span style={{color:"var(--text-primary)",fontWeight:600,textTransform:"capitalize"}}>{val}</span></div>
             ))}
-            {orderData.menuItems?.length>0&&<div style={{display:"flex",flexWrap:"wrap",gap:4,margin:"8px 0"}}>{orderData.menuItems.map(item=><span key={item} style={{fontSize:11,padding:"2px 8px",borderRadius:10,background:"#fff5f5",color:"#c0392b",border:"1px solid #fca5a5"}}>{item}</span>)}</div>}
+            {orderData.menuItems?.length>0&&<div style={{display:"flex",flexWrap:"wrap",gap:4,margin:"8px 0"}}>{orderData.menuItems.map(item=><span key={item} style={{fontSize:11,padding:"2px 8px",borderRadius:10,background:"var(--bg-accent-light)",color:"var(--text-accent)",border:"1px solid var(--border-accent)"}}>{item}</span>)}</div>}
             <div style={{display:"flex",gap:8,marginTop:10}}>
-              <button onClick={()=>setOrderData(null)} style={{flex:1,padding:"9px",borderRadius:8,background:"#f9fafb",border:"1px solid #e5e7eb",color:"#6b7280",cursor:"pointer",fontSize:12}}>Edit</button>
+              <button onClick={()=>setOrderData(null)} style={{flex:1,padding:"9px",borderRadius:8,background:"var(--bg-hover)",border:"1px solid var(--border-default)",color:"var(--text-secondary)",cursor:"pointer",fontSize:12}}>Edit</button>
               <button onClick={confirmOrder} style={{flex:2,padding:"9px",borderRadius:8,background:"linear-gradient(135deg,#16a34a,#15803d)",border:"none",color:"#fff",cursor:"pointer",fontSize:12,fontWeight:700}}>✅ Confirm & Send</button>
             </div>
           </div>
         )}
         <div ref={bottomRef}/>
       </div>
-      {msgs.length===1&&<div style={{padding:"6px 12px 4px",display:"flex",gap:6,flexWrap:"wrap",borderTop:"1px solid #f3f4f6",background:"#fff"}}>
-        {["🎂 Birthday party, 50 guests","💍 Wedding, 200 guests","📦 Bulk delivery, 30 portions","🪔 Durga Puja feast, 100 people"].map(p=><button key={p} onClick={()=>{setInput(p);setTimeout(()=>inputRef.current?.focus(),50);}} style={{fontSize:11,padding:"5px 10px",borderRadius:12,background:"#fff5f5",border:"1px solid #fca5a5",color:"#c0392b",cursor:"pointer",whiteSpace:"nowrap"}}>{p}</button>)}
+      {msgs.length===1&&<div style={{padding:"6px 12px 4px",display:"flex",gap:6,flexWrap:"wrap",borderTop:"1px solid var(--border-default)",background:"var(--bg-card)"}}>
+        {["🎂 Birthday party, 50 guests","💍 Wedding, 200 guests","📦 Bulk delivery, 30 portions","🪔 Durga Puja feast, 100 people"].map(p=><button key={p} onClick={()=>{setInput(p);setTimeout(()=>inputRef.current?.focus(),50);}} style={{fontSize:11,padding:"5px 10px",borderRadius:12,background:"var(--bg-accent-light)",border:"1px solid var(--border-accent)",color:"var(--text-accent)",cursor:"pointer",whiteSpace:"nowrap"}}>{p}</button>)}
       </div>}
-      <div style={{display:"flex",gap:8,padding:"10px 12px",borderTop:"1px solid #f3f4f6",background:"#fff"}}>
-        <input ref={inputRef} value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&!e.shiftKey&&sendMessage()} placeholder="Describe your event, guests, budget..." style={{flex:1,background:"#f9fafb",border:"1px solid #e5e7eb",borderRadius:12,padding:"10px 14px",color:"#1f2937",fontSize:13,outline:"none"}}/>
+      <div style={{display:"flex",gap:8,padding:"10px 12px",borderTop:"1px solid var(--border-default)",background:"var(--bg-card)"}}>
+        <input ref={inputRef} value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&!e.shiftKey&&sendMessage()} placeholder="Describe your event, guests, budget..." style={{flex:1,background:"var(--bg-hover)",border:"1px solid var(--border-default)",borderRadius:12,padding:"10px 14px",color:"var(--text-primary)",fontSize:13,outline:"none"}}/>
         <button onClick={sendMessage} disabled={!input.trim()||loading} style={{width:42,height:42,borderRadius:12,background:"linear-gradient(135deg,#c0392b,#e74c3c)",border:"none",color:"#fff",fontSize:18,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:input.trim()&&!loading?1:0.4}}>➤</button>
       </div>
     </div>
@@ -326,6 +326,17 @@ function AayojanChatbot({onOrderCreated,user,onLoginRequired}){
 export default function AayojanApp(){
   const [view,setView]=useState("landing");
   const [animIn,setAnimIn]=useState(true);
+
+  // Dark mode
+  const [darkMode,setDarkMode]=useState(()=>{
+    const saved=localStorage.getItem("aayojan-dark-mode");
+    if(saved!==null) return saved==="true";
+    return window.matchMedia?.("(prefers-color-scheme:dark)").matches||false;
+  });
+  useEffect(()=>{
+    document.documentElement.setAttribute("data-theme",darkMode?"dark":"light");
+    localStorage.setItem("aayojan-dark-mode",darkMode);
+  },[darkMode]);
 
   // Auth — Firebase
   const {user,loading:authLoading,loginWithGoogle,loginWithEmail,signupWithEmail,logout,refreshUser}=useAuth();
@@ -582,7 +593,7 @@ export default function AayojanApp(){
   const addCustomItem=()=>{if(customItem.trim()&&!selectedItems.includes(customItem.trim())){setSelectedItems(prev=>[...prev,customItem.trim()]);setCustomItem("");}};
   const resetApp=()=>{setStep(0);setServiceType(null);setQuotes([]);setSelectedItems([]);setEventType(null);setGuestCount(100);setPerPlateBudget(500);setCustomerPincode("");setCustomerCoords(null);setSelectedQuote(null);setOrderPlaced(null);setQuotationRequest(null);setWhatsappSent([]);setDeliveryAddress({flat:"",building:"",street:"",landmark:"",pincode:"",city:"Kolkata",state:"West Bengal"});};
 
-  if(authLoading) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",background:"#fdf8f3"}}><div style={{textAlign:"center"}}><div style={{fontSize:48,marginBottom:12}}>🍛</div><div style={{color:"#6b7280"}}>Loading...</div></div></div>;
+  if(authLoading) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",background:"var(--bg-primary)"}}><div style={{textAlign:"center"}}><div style={{fontSize:48,marginBottom:12}}>🍛</div><div style={{color:"var(--text-secondary)"}}>Loading...</div></div></div>;
 
   return(
     <div style={S.root}>
@@ -770,6 +781,7 @@ export default function AayojanApp(){
           </div>
         </button>
         <div className="header-right" style={{display:"flex",alignItems:"center",gap:8}}>
+          <button className="theme-toggle" onClick={()=>setDarkMode(!darkMode)} title={darkMode?"Switch to light mode":"Switch to dark mode"}>{darkMode?"☀️":"🌙"}</button>
           {["app","chat","profile"].includes(view)&&<button onClick={()=>navigate("landing")} style={S.ghostBtn}>← Home</button>}
           <button onClick={()=>navigate("chat")} style={{...S.ghostBtn,borderColor:"#fca5a5",color:"#c0392b",background:"#fff5f5"}}>🤖 AI Chat</button>
           {user?.isAdmin&&<button onClick={()=>{loadAdminData();navigate("admin");}} style={{...S.ghostBtn,borderColor:"#bbf7d0",color:"#16a34a",background:"#f0fdf4"}}>👑 Admin</button>}
@@ -1945,38 +1957,38 @@ export default function AayojanApp(){
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const S={
-  root:{minHeight:"100vh",background:"#fef9f7",fontFamily:"'DM Sans',sans-serif",color:"#1f2937",paddingBottom:60,position:"relative"},
+  root:{minHeight:"100vh",background:"var(--bg-secondary)",fontFamily:"'DM Sans',sans-serif",color:"var(--text-primary)",paddingBottom:60,position:"relative",transition:"background 0.3s ease, color 0.3s ease"},
   bengaliTopBorder:{height:6,background:"linear-gradient(90deg,#c0392b,#e74c3c,#f97316,#e74c3c,#c0392b)",backgroundSize:"200% 100%"},
   bgPattern:{position:"fixed",top:0,left:0,right:0,bottom:0,backgroundImage:"radial-gradient(circle at 20% 20%,rgba(192,57,43,0.03) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(192,57,43,0.03) 0%,transparent 50%)",pointerEvents:"none"},
-  header:{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 24px",borderBottom:"1px solid #fde8d8",position:"sticky",top:0,background:"rgba(255,249,247,0.95)",backdropFilter:"blur(10px)",zIndex:100,boxShadow:"0 1px 4px rgba(192,57,43,0.06)"},
+  header:{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 24px",borderBottom:"1px solid var(--border-light)",position:"sticky",top:0,background:"var(--bg-header)",backdropFilter:"blur(10px)",zIndex:100,boxShadow:"var(--shadow-header)"},
   page:{maxWidth:820,margin:"0 auto",padding:"24px 18px"},
-  card:{background:"#fff",border:"1px solid #fde8d8",borderRadius:18,padding:"28px 32px",boxShadow:"0 4px 20px rgba(192,57,43,0.06)"},
-  cardTitle:{fontFamily:"'Playfair Display',serif",fontSize:24,fontWeight:700,marginBottom:6,color:"#1f2937"},
-  sectionTitle:{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:700,color:"#1f2937",marginBottom:20},
-  ghostBtn:{background:"#fff",border:"1px solid #e5e7eb",color:"#6b7280",padding:"7px 12px",borderRadius:8,fontSize:12,cursor:"pointer",boxShadow:"0 1px 3px rgba(0,0,0,0.05)"},
+  card:{background:"var(--bg-card)",border:"1px solid var(--border-light)",borderRadius:18,padding:"28px 32px",boxShadow:"var(--shadow-card)",transition:"background 0.3s ease, border-color 0.3s ease"},
+  cardTitle:{fontFamily:"'Playfair Display',serif",fontSize:24,fontWeight:700,marginBottom:6,color:"var(--text-primary)"},
+  sectionTitle:{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:700,color:"var(--text-primary)",marginBottom:20},
+  ghostBtn:{background:"var(--bg-card)",border:"1px solid var(--border-default)",color:"var(--text-secondary)",padding:"7px 12px",borderRadius:8,fontSize:12,cursor:"pointer",boxShadow:"0 1px 3px rgba(0,0,0,0.05)"},
   primaryBtn:{background:"linear-gradient(135deg,#c0392b,#e74c3c)",color:"#fff",border:"none",padding:"12px 24px",borderRadius:10,fontSize:14,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 14px rgba(192,57,43,0.3)",width:"100%",marginTop:8},
-  secondaryBtn:{background:"#fff",color:"#6b7280",border:"1px solid #e5e7eb",padding:"11px 20px",borderRadius:10,fontSize:13,cursor:"pointer",boxShadow:"0 1px 3px rgba(0,0,0,0.04)"},
+  secondaryBtn:{background:"var(--bg-card)",color:"var(--text-secondary)",border:"1px solid var(--border-default)",padding:"11px 20px",borderRadius:10,fontSize:13,cursor:"pointer",boxShadow:"0 1px 3px rgba(0,0,0,0.04)"},
   btnRow:{display:"flex",gap:10,marginTop:18,alignItems:"center"},
   formGrid:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16},
   fieldWrap:{display:"flex",flexDirection:"column",gap:5},
-  fieldLabel:{fontSize:12,fontWeight:600,color:"#374151",letterSpacing:"0.03em"},
-  inp2:{background:"#fff",border:"1px solid #e5e7eb",borderRadius:9,padding:"10px 14px",color:"#1f2937",fontSize:13,outline:"none",transition:"border-color 0.2s"},
+  fieldLabel:{fontSize:12,fontWeight:600,color:"var(--text-primary)",letterSpacing:"0.03em"},
+  inp2:{background:"var(--bg-input)",border:"1px solid var(--border-default)",borderRadius:9,padding:"10px 14px",color:"var(--text-primary)",fontSize:13,outline:"none",transition:"border-color 0.2s, background 0.3s ease"},
   tastingBanner:{background:"linear-gradient(135deg,#c0392b,#e74c3c,#b5451b)",borderRadius:18,padding:"24px 28px",display:"flex",gap:20,alignItems:"flex-start",justifyContent:"space-between",flexWrap:"wrap",marginBottom:36,boxShadow:"0 8px 24px rgba(192,57,43,0.25)",position:"relative",overflow:"hidden"},
 };
 
 // ─── Payment gateway styles ───────────────────────────────────────────────────
 const PG={
-  overlay:{position:"fixed",inset:0,zIndex:300,background:"rgba(0,0,0,0.5)",backdropFilter:"blur(6px)",display:"flex",alignItems:"center",justifyContent:"center",padding:16},
-  modal:{background:"#fff",borderRadius:18,width:"100%",maxWidth:400,boxShadow:"0 20px 60px rgba(0,0,0,0.2)",overflow:"hidden"},
-  header:{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 18px",borderBottom:"1px solid #f3f4f6",background:"#fef9f7"},
+  overlay:{position:"fixed",inset:0,zIndex:300,background:"var(--modal-overlay)",backdropFilter:"blur(6px)",display:"flex",alignItems:"center",justifyContent:"center",padding:16},
+  modal:{background:"var(--bg-card)",borderRadius:18,width:"100%",maxWidth:400,boxShadow:"0 20px 60px rgba(0,0,0,0.2)",overflow:"hidden",border:"1px solid var(--border-light)"},
+  header:{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 18px",borderBottom:"1px solid var(--border-light)",background:"var(--bg-secondary)"},
   pgLogo:{width:34,height:34,borderRadius:9,background:"linear-gradient(135deg,#c0392b,#e74c3c)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:17},
-  amountBanner:{background:"linear-gradient(135deg,#fff5f5,#fff)",padding:"18px 20px",textAlign:"center",borderBottom:"1px solid #fde8d8"},
-  methodBtn:{display:"flex",alignItems:"center",gap:12,padding:"14px",border:"1px solid #e5e7eb",borderRadius:11,cursor:"pointer",background:"#fff",transition:"all 0.15s",width:"100%",boxShadow:"0 1px 3px rgba(0,0,0,0.04)"},
-  secureRow:{display:"flex",alignItems:"center",gap:6,justifyContent:"center",fontSize:11,color:"#9ca3af",marginTop:14,padding:"8px",background:"#f9fafb",borderRadius:8},
+  amountBanner:{background:"var(--bg-accent-light)",padding:"18px 20px",textAlign:"center",borderBottom:"1px solid var(--border-light)"},
+  methodBtn:{display:"flex",alignItems:"center",gap:12,padding:"14px",border:"1px solid var(--border-default)",borderRadius:11,cursor:"pointer",background:"var(--bg-card)",transition:"all 0.15s",width:"100%",boxShadow:"0 1px 3px rgba(0,0,0,0.04)"},
+  secureRow:{display:"flex",alignItems:"center",gap:6,justifyContent:"center",fontSize:11,color:"var(--text-muted)",marginTop:14,padding:"8px",background:"var(--bg-hover)",borderRadius:8},
   cardPreview:{background:"linear-gradient(135deg,#c0392b,#9b1c1c)",borderRadius:12,padding:"18px 20px",marginBottom:16,boxShadow:"0 4px 12px rgba(192,57,43,0.3)"},
-  lbl:{fontSize:12,fontWeight:600,color:"#374151",marginBottom:4,display:"block"},
-  inp:{width:"100%",padding:"10px 12px",border:"1px solid",borderRadius:9,color:"#1f2937",fontSize:14,outline:"none",background:"#fff"},
+  lbl:{fontSize:12,fontWeight:600,color:"var(--text-primary)",marginBottom:4,display:"block"},
+  inp:{width:"100%",padding:"10px 12px",border:"1px solid",borderRadius:9,color:"var(--text-primary)",fontSize:14,outline:"none",background:"var(--bg-input)"},
   ferr:{fontSize:11,color:"#ef4444",marginTop:3},
   payBtn:{width:"100%",padding:"13px",background:"linear-gradient(135deg,#c0392b,#e74c3c)",border:"none",borderRadius:10,color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 14px rgba(192,57,43,0.3)",marginTop:16},
-  backLink:{background:"none",border:"none",color:"#9ca3af",fontSize:13,cursor:"pointer",marginBottom:14,display:"block",padding:0},
+  backLink:{background:"none",border:"none",color:"var(--text-muted)",fontSize:13,cursor:"pointer",marginBottom:14,display:"block",padding:0},
 };
