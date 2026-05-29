@@ -244,18 +244,67 @@ function AayojanChatbot({onOrderCreated,user,onLoginRequired}){
   const [loading,setLoading]=useState(false);
   const [orderData,setOrderData]=useState(null);
   const [confirmed,setConfirmed]=useState(false);
+  const [msgCount,setMsgCount]=useState(0);
+  const [blocked,setBlocked]=useState(false);
   const bottomRef=useRef(null);
   const inputRef=useRef(null);
   useEffect(()=>{bottomRef.current?.scrollIntoView({behavior:"smooth"});},[msgs]);
 
-  const SYSTEM=`You are Aayojan AI, a catering assistant for Newtown, Kolkata. Collect: 1) service type (full catering 30+ guests with staff/cutlery, OR bulk delivery any quantity packed), 2) event type, 3) guest count, 4) per-plate budget ₹350-1800 full / ₹120-600 bulk, 5) menu items, 6) pincode (700156-Action Area I, 700157-Action Area II, 700135-Rajarhat, 700161-Action Area III, 700136-Baguiati, 700059-Salt Lake V, 700091-Salt Lake, 700105-EM Bypass, 700107-Gariahat, 700160-Eco Park). Be warm, suggest Bengali dishes (Sorshe Ilish, Kosha Mangsho, Mishti Doi, Rasgolla). When you have ALL info output: ###ORDER_JSON###{"serviceType":"full","eventType":"wedding","guestCount":150,"perPlateBudget":600,"menuItems":["Sorshe Ilish","Mishti Doi"],"pincode":"700156","summary":"..."}###END_JSON### Keep replies to 2-3 sentences.`;
+  // Profanity word list (lightweight client-side filter)
+  const PROFANITY_RE=/\b(fuck|shit|ass|bitch|damn|bastard|dick|crap|cunt|whore|slut|nigger|faggot|retard|idiot|stupid|dumb|hate\s+you|kill\s+you|die)\b/i;
+  const MAX_MSG_LENGTH=500;
+  const MAX_MSGS_PER_SESSION=30;
+  const OFF_TOPIC_WARNINGS=useRef(0);
+
+  const SYSTEM=`You are Aayojan AI, a catering assistant for Newtown, Kolkata. You ONLY help with catering and food ordering. STRICT RULES:
+1) If the user asks about anything NOT related to food, catering, events, menus, or party planning — politely redirect: "I'm your catering assistant! Let's plan your perfect event 🍽️ Tell me about your guests, cuisine, and budget."
+2) If the user uses profanity or abusive language — respond: "Let's keep things friendly! 😊 I'm here to help plan amazing food for your event. What kind of catering do you need?"
+3) Do NOT engage with off-topic conversations (politics, tech, jokes, personal questions, etc.) — always steer back to catering.
+4) Keep replies to 2-3 sentences. Be warm, suggest Bengali dishes (Sorshe Ilish, Kosha Mangsho, Mishti Doi, Rasgolla).
+5) Collect: service type (full catering 30+ guests with staff/cutlery, OR bulk delivery any quantity packed), event type, guest count, per-plate budget ₹350-1800 full / ₹120-600 bulk, menu items, pincode (700156-Action Area I, 700157-Action Area II, 700135-Rajarhat, 700161-Action Area III, 700136-Baguiati, 700059-Salt Lake V, 700091-Salt Lake, 700105-EM Bypass, 700107-Gariahat, 700160-Eco Park).
+6) When you have ALL info output: ###ORDER_JSON###{"serviceType":"full","eventType":"wedding","guestCount":150,"perPlateBudget":600,"menuItems":["Sorshe Ilish","Mishti Doi"],"pincode":"700156","summary":"..."}###END_JSON###`;
 
   const sendMessage=async()=>{
     const text=input.trim();if(!text||loading)return;
-    setInput("");const newMsgs=[...msgs,{role:"user",text}];setMsgs(newMsgs);setLoading(true);
+
+    // Guard: blocked session
+    if(blocked){
+      setInput("");
+      setMsgs(prev=>[...prev,{role:"user",text},{role:"assistant",text:"⚠️ This session has been paused due to too many messages. Please refresh the page to start a new conversation."}]);
+      return;
+    }
+
+    // Guard: max message length
+    if(text.length>MAX_MSG_LENGTH){
+      setInput("");
+      setMsgs(prev=>[...prev,{role:"user",text:text.slice(0,100)+"..."},{role:"assistant",text:`✂️ Please keep your message under ${MAX_MSG_LENGTH} characters. Try to be concise about your catering needs!`}]);
+      return;
+    }
+
+    // Guard: profanity filter
+    if(PROFANITY_RE.test(text)){
+      setInput("");
+      OFF_TOPIC_WARNINGS.current++;
+      if(OFF_TOPIC_WARNINGS.current>=3){setBlocked(true);setMsgs(prev=>[...prev,{role:"user",text:"[message filtered]"},{role:"assistant",text:"🚫 This session has been paused due to repeated inappropriate language. Please refresh the page to start over."}]);return;}
+      setMsgs(prev=>[...prev,{role:"user",text:"[message filtered]"},{role:"assistant",text:"Let's keep things friendly! 😊 I'm here to help plan amazing food for your event. What kind of catering do you need?"}]);
+      return;
+    }
+
+    // Guard: rate limit per session
+    if(msgCount>=MAX_MSGS_PER_SESSION){
+      setBlocked(true);
+      setInput("");
+      setMsgs(prev=>[...prev,{role:"user",text},{role:"assistant",text:"📋 You've reached the message limit for this session. If you haven't placed an order yet, please refresh the page to start a new conversation!"}]);
+      return;
+    }
+
+    setInput("");setMsgCount(c=>c+1);
+    const newMsgs=[...msgs,{role:"user",text}];setMsgs(newMsgs);setLoading(true);
     try{
       const API_URL=import.meta.env.VITE_API_URL||"http://localhost:8000";
-      const res=await fetch(`${API_URL}/api/chat`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:newMsgs.map(m=>({role:m.role,content:m.text.replace(/###ORDER_JSON###[\s\S]*?###END_JSON###/g,"").trim()})),system_prompt:SYSTEM})});
+      // Only send last 10 messages to limit token usage
+      const recentMsgs=newMsgs.slice(-10);
+      const res=await fetch(`${API_URL}/api/chat`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:recentMsgs.map(m=>({role:m.role,content:m.text.replace(/###ORDER_JSON###[\s\S]*?###END_JSON###/g,"").trim()})),system_prompt:SYSTEM})});
       const data=await res.json();
       const reply=data.reply||"Sorry, try again.";
       const jm=reply.match(/###ORDER_JSON###\s*([\s\S]*?)\s*###END_JSON###/);
@@ -312,9 +361,15 @@ function AayojanChatbot({onOrderCreated,user,onLoginRequired}){
       {msgs.length===1&&<div style={{padding:"6px 12px 4px",display:"flex",gap:6,flexWrap:"wrap",borderTop:"1px solid var(--border-default)",background:"var(--bg-card)"}}>
         {["🎂 Birthday party, 50 guests","💍 Wedding, 200 guests","📦 Bulk delivery, 30 portions","🪔 Durga Puja feast, 100 people"].map(p=><button key={p} onClick={()=>{setInput(p);setTimeout(()=>inputRef.current?.focus(),50);}} style={{fontSize:11,padding:"5px 10px",borderRadius:12,background:"var(--bg-accent-light)",border:"1px solid var(--border-accent)",color:"var(--text-accent)",cursor:"pointer",whiteSpace:"nowrap"}}>{p}</button>)}
       </div>}
-      <div style={{display:"flex",gap:8,padding:"10px 12px",borderTop:"1px solid var(--border-default)",background:"var(--bg-card)"}}>
-        <input ref={inputRef} value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&!e.shiftKey&&sendMessage()} placeholder="Describe your event, guests, budget..." style={{flex:1,background:"var(--bg-hover)",border:"1px solid var(--border-default)",borderRadius:12,padding:"10px 14px",color:"var(--text-primary)",fontSize:13,outline:"none"}}/>
-        <button onClick={sendMessage} disabled={!input.trim()||loading} style={{width:42,height:42,borderRadius:12,background:"linear-gradient(135deg,#c0392b,#e74c3c)",border:"none",color:"#fff",fontSize:18,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:input.trim()&&!loading?1:0.4}}>➤</button>
+      <div style={{display:"flex",gap:8,padding:"10px 12px",borderTop:"1px solid var(--border-default)",background:"var(--bg-card)",flexDirection:"column"}}>
+        <div style={{display:"flex",gap:8}}>
+          <input ref={inputRef} value={input} onChange={e=>setInput(e.target.value.slice(0,MAX_MSG_LENGTH))} onKeyDown={e=>e.key==="Enter"&&!e.shiftKey&&sendMessage()} placeholder={blocked?"Session paused — refresh to start over":"Describe your event, guests, budget..."} disabled={blocked} style={{flex:1,background:"var(--bg-hover)",border:"1px solid var(--border-default)",borderRadius:12,padding:"10px 14px",color:"var(--text-primary)",fontSize:13,outline:"none",opacity:blocked?0.5:1}}/>
+          <button onClick={sendMessage} disabled={!input.trim()||loading||blocked} style={{width:42,height:42,borderRadius:12,background:"linear-gradient(135deg,#c0392b,#e74c3c)",border:"none",color:"#fff",fontSize:18,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:input.trim()&&!loading&&!blocked?1:0.4}}>➤</button>
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:"var(--text-muted)",padding:"0 4px"}}>
+          <span>{input.length}/{MAX_MSG_LENGTH}</span>
+          <span>{MAX_MSGS_PER_SESSION-msgCount} messages remaining</span>
+        </div>
       </div>
     </div>
   );
