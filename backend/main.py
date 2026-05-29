@@ -12,7 +12,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from .gemini_client import GeminiClient
+from gemini_client import GeminiClient
 
 load_dotenv()
 
@@ -36,7 +36,7 @@ app = FastAPI(
 )
 
 # CORS
-origins = os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
+origins = os.getenv("CORS_ORIGINS", "http://localhost:5173,https://gouravchat.github.io").split(",")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
