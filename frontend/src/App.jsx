@@ -383,9 +383,19 @@ export default function AayojanApp(){
   const [chatOrderConfirmed,setChatOrderConfirmed]=useState(null);
 
   // Registration (admin adds partners)
-  const [regForm,setRegForm]=useState({name:"",ownerName:"",phone:"",email:"",address:"",pincode:"",specialty:[],cuisineSpecialties:[],serviceTypes:[],priceRange:"₹₹",turnaround:"2–3 hrs"});
+  const [regForm,setRegForm]=useState({name:"",ownerName:"",phone:"",email:"",address:"",pincode:"",specialty:[],cuisineSpecialties:[],serviceTypes:[],priceRange:"₹₹",turnaround:"2–3 hrs",
+    // Rich fields for ranker/retrieval
+    minGuests:10,maxGuests:500,pricePerPlateMin:150,pricePerPlateMax:800,
+    fssaiLicense:"",yearsInBusiness:"",teamSize:"",
+    signatureDishes:"",description:"",
+    deliveryPincodes:[],menuHighlights:[],
+    vegOnly:false,hasLiveCounter:false,providesDecor:false,providesStaff:true,
+    paymentModes:["Cash","UPI"],cancellationPolicy:"48hrs",
+    availableDays:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+  });
   const [regErrors,setRegErrors]=useState({});
   const [regSuccess,setRegSuccess]=useState(false);
+  const [regStep,setRegStep]=useState(0); // 0=basic, 1=service, 2=capacity, 3=menu&extras
 
   // DB view / Admin
   const [dbTab,setDbTab]=useState("caterers");
@@ -564,8 +574,8 @@ export default function AayojanApp(){
   const placeOrder=async()=>{if(!validateAddress())return;const order={quotationRequestId:quotationRequest?.id,customerId:user?.uid,customerEmail:user?.email,customerPhone:user?.phone||"",catererId:selectedQuote.id,catererName:selectedQuote.name,eventType,serviceType,guestCount,perPlateBudget,perPlateActual:selectedQuote.perPlateActual,menuItems:selectedItems,deliveryAddress:`${deliveryAddress.flat}, ${deliveryAddress.building}, ${deliveryAddress.street}${deliveryAddress.landmark?", "+deliveryAddress.landmark:""}, ${deliveryAddress.city} - ${deliveryAddress.pincode}`,deliveryPincode:deliveryAddress.pincode,distanceKm:selectedQuote.distanceKm,basePrice:selectedQuote.basePrice,travelSurcharge:selectedQuote.travelSurcharge,totalPrice:selectedQuote.totalPrice,quoteCode:selectedQuote.quoteCode,status:"Confirmed",placedAt:new Date().toISOString()};const orderId=await createOrder(order);setOrderPlaced({id:orderId,...order});setStep(6);};
 
   // ── Registration ──────────────────────────────────────────────────────────
-  const validateReg=()=>{const e={};if(!regForm.name.trim())e.name="Required";if(!regForm.ownerName.trim())e.ownerName="Required";if(!/^\d{10}$/.test(regForm.phone))e.phone="Valid 10-digit number";if(!regForm.email.includes("@"))e.email="Valid email required";if(!regForm.address.trim())e.address="Required";if(!PINCODE_COORDS[regForm.pincode.trim()])e.pincode="Valid Kolkata pincode";if(regForm.specialty.length===0)e.specialty="Select at least one";if(regForm.cuisineSpecialties.length===0)e.cuisineSpecialties="Select at least one";if(regForm.serviceTypes.length===0)e.serviceTypes="Select at least one";setRegErrors(e);return Object.keys(e).length===0;};
-  const submitReg=async()=>{if(!validateReg())return;const logos=["🍽️","🥘","🫕","🥗","🍛","🥞","🎂"];await addPartner({...regForm,pincode:regForm.pincode.trim(),logo:logos[Math.floor(Math.random()*logos.length)],tags:regForm.cuisineSpecialties.slice(0,3),turnaround:regForm.turnaround});setRegSuccess(true);getPartners().then(p=>{if(p.length>0)setFirestoreCaterers(p);});};
+  const validateReg=()=>{const e={};if(!regForm.name.trim())e.name="Required";if(!regForm.ownerName.trim())e.ownerName="Required";if(!/^\d{10}$/.test(regForm.phone))e.phone="Valid 10-digit number";if(!regForm.email.includes("@"))e.email="Valid email required";if(!regForm.address.trim())e.address="Required";if(!PINCODE_COORDS[regForm.pincode.trim()])e.pincode="Valid Kolkata pincode";if(regForm.specialty.length===0)e.specialty="Select at least one";if(regForm.cuisineSpecialties.length===0)e.cuisineSpecialties="Select at least one";if(regForm.serviceTypes.length===0)e.serviceTypes="Select at least one";if(regForm.pricePerPlateMin>=regForm.pricePerPlateMax)e.pricing="Min must be less than max";setRegErrors(e);return Object.keys(e).length===0;};
+  const submitReg=async()=>{if(!validateReg())return;const logos=["🍽️","🥘","🫕","🥗","🍛","🥞","🎂"];await addPartner({...regForm,pincode:regForm.pincode.trim(),logo:logos[Math.floor(Math.random()*logos.length)],tags:regForm.cuisineSpecialties.slice(0,3),turnaround:regForm.turnaround,deliveryPincodes:regForm.deliveryPincodes.length>0?regForm.deliveryPincodes:Object.keys(PINCODE_COORDS)});setRegSuccess(true);setRegStep(0);getPartners().then(p=>{if(p.length>0)setFirestoreCaterers(p);});};
 
   const copyCode=(code)=>{navigator.clipboard?.writeText(code);setCopiedCode(code);setTimeout(()=>setCopiedCode(null),2000);};
   const toggleItem=(item)=>setSelectedItems(prev=>prev.includes(item)?prev.filter(i=>i!==item):[...prev,item]);
@@ -1724,46 +1734,187 @@ export default function AayojanApp(){
             </div>
           )}
 
-          {/* Add Partner Form (reuse registration form) */}
+          {/* Add Partner Form — Multi-step rich onboarding */}
           {dbTab==="add_partner"&&(
             <div style={S.card}>
-              {regSuccess?<div style={{textAlign:"center"}}><div style={{fontSize:60,marginBottom:12}}>✅</div><h3 style={{fontFamily:"'Playfair Display',serif",fontSize:22,color:"#1f2937",marginBottom:8}}>Partner Added!</h3><button onClick={()=>{setRegSuccess(false);setRegForm({name:"",ownerName:"",phone:"",email:"",address:"",pincode:"",specialty:[],cuisineSpecialties:[],serviceTypes:[],priceRange:"₹₹",turnaround:"2–3 hrs"});loadAdminData();setDbTab("partners");}} style={S.primaryBtn}>View Partners</button></div>:(
+              {regSuccess?<div style={{textAlign:"center"}}><div style={{fontSize:60,marginBottom:12}}>✅</div><h3 style={{fontFamily:"'Playfair Display',serif",fontSize:22,color:"#1f2937",marginBottom:8}}>Partner Added!</h3><p style={{fontSize:13,color:"#6b7280",marginBottom:16}}>All data saved to Firestore for AI ranking & retrieval.</p><button onClick={()=>{setRegSuccess(false);setRegForm({name:"",ownerName:"",phone:"",email:"",address:"",pincode:"",specialty:[],cuisineSpecialties:[],serviceTypes:[],priceRange:"₹₹",turnaround:"2–3 hrs",minGuests:10,maxGuests:500,pricePerPlateMin:150,pricePerPlateMax:800,fssaiLicense:"",yearsInBusiness:"",teamSize:"",signatureDishes:"",description:"",deliveryPincodes:[],menuHighlights:[],vegOnly:false,hasLiveCounter:false,providesDecor:false,providesStaff:true,paymentModes:["Cash","UPI"],cancellationPolicy:"48hrs",availableDays:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]});loadAdminData();setDbTab("partners");}} style={S.primaryBtn}>View Partners</button></div>:(
               <>
-                <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:700,marginBottom:16}}>Add New Partner</h3>
-                <div className="form-grid" style={S.formGrid}>
-                  {[["Business Name *","name","e.g. Bhojohori Manna"],["Owner Name *","ownerName","Full name"],["Phone *","phone","10-digit mobile"],["Email *","email","business@email.com"],["Address *","address","Street address"],["Pincode *","pincode","6-digit pincode"]].map(([lbl,key,ph])=>(
-                    <div key={key} style={S.fieldWrap}><label style={S.fieldLabel}>{lbl}</label>
-                      <input style={{...S.inp2,borderColor:regErrors[key]?"#ef4444":"#e5e7eb"}} value={regForm[key]} onChange={e=>setRegForm({...regForm,[key]:e.target.value})} placeholder={ph}/>
-                      {regErrors[key]&&<div style={{fontSize:11,color:"#ef4444"}}>{regErrors[key]}</div>}
-                    </div>
+                <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:700,marginBottom:4}}>Add New Partner</h3>
+                <p style={{fontSize:12,color:"#9ca3af",marginBottom:16}}>Comprehensive data for AI-powered ranking & matching</p>
+
+                {/* Step indicator */}
+                <div style={{display:"flex",gap:6,marginBottom:20}}>
+                  {["Basic Info","Services","Capacity & Pricing","Menu & Extras"].map((s,i)=>(
+                    <button key={s} onClick={()=>setRegStep(i)} style={{flex:1,padding:"8px 4px",borderRadius:8,border:`1.5px solid ${regStep===i?"#c0392b":"#e5e7eb"}`,background:regStep===i?"#c0392b":i<regStep?"#f0fdf4":"#fff",color:regStep===i?"#fff":i<regStep?"#16a34a":"#6b7280",fontSize:11,fontWeight:regStep===i?700:500,cursor:"pointer",transition:"all 0.2s"}}>
+                      {i<regStep?"✓ ":""}{s}
+                    </button>
                   ))}
                 </div>
-                <div style={{marginTop:16}}>
-                  <label style={S.fieldLabel}>Event Types *</label>
-                  <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>
-                    {EVENT_TYPES.map(et=><button key={et} onClick={()=>setRegForm(f=>({...f,specialty:f.specialty.includes(et)?f.specialty.filter(s=>s!==et):[...f.specialty,et]}))} style={{padding:"6px 14px",borderRadius:10,border:`1px solid ${regForm.specialty.includes(et)?"#c0392b":"#e5e7eb"}`,background:regForm.specialty.includes(et)?"#fff5f5":"#fff",color:regForm.specialty.includes(et)?"#c0392b":"#6b7280",fontSize:12,cursor:"pointer"}}>{et}</button>)}
+
+                {/* Step 0: Basic Info */}
+                {regStep===0&&(
+                  <div>
+                    <div className="form-grid" style={S.formGrid}>
+                      {[["Business Name *","name","e.g. Bhojohori Manna Caterers"],["Owner Name *","ownerName","Full name of owner/manager"],["Phone *","phone","10-digit mobile (WhatsApp)"],["Email *","email","business@email.com"],["Address *","address","Full street address"],["Pincode *","pincode","6-digit Kolkata pincode"]].map(([lbl,key,ph])=>(
+                        <div key={key} style={S.fieldWrap}><label style={S.fieldLabel}>{lbl}</label>
+                          <input style={{...S.inp2,borderColor:regErrors[key]?"#ef4444":"#e5e7eb"}} value={regForm[key]} onChange={e=>setRegForm({...regForm,[key]:e.target.value})} placeholder={ph}/>
+                          {regErrors[key]&&<div style={{fontSize:11,color:"#ef4444"}}>{regErrors[key]}</div>}
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{marginTop:16}}>
+                      <label style={S.fieldLabel}>FSSAI License No. (optional but boosts ranking)</label>
+                      <input style={S.inp2} value={regForm.fssaiLicense} onChange={e=>setRegForm({...regForm,fssaiLicense:e.target.value})} placeholder="14-digit FSSAI number"/>
+                    </div>
+                    <div style={{display:"flex",gap:12,marginTop:12}}>
+                      <div style={{flex:1}}><label style={S.fieldLabel}>Years in Business</label>
+                        <select value={regForm.yearsInBusiness} onChange={e=>setRegForm({...regForm,yearsInBusiness:e.target.value})} style={{...S.inp2,width:"100%"}}>
+                          <option value="">Select</option>{["<1 year","1–3 years","3–5 years","5–10 years","10+ years"].map(y=><option key={y} value={y}>{y}</option>)}
+                        </select>
+                      </div>
+                      <div style={{flex:1}}><label style={S.fieldLabel}>Team Size</label>
+                        <select value={regForm.teamSize} onChange={e=>setRegForm({...regForm,teamSize:e.target.value})} style={{...S.inp2,width:"100%"}}>
+                          <option value="">Select</option>{["1–5","5–10","10–20","20–50","50+"].map(t=><option key={t} value={t}>{t}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <div style={{marginTop:16}}>
+                      <label style={S.fieldLabel}>Business Description (used for AI matching)</label>
+                      <textarea value={regForm.description} onChange={e=>setRegForm({...regForm,description:e.target.value})} placeholder="Describe your catering business, specialties, USP, notable clients..." style={{...S.inp2,minHeight:80,resize:"vertical"}}/>
+                    </div>
                   </div>
-                  {regErrors.specialty&&<div style={{fontSize:11,color:"#ef4444",marginTop:4}}>{regErrors.specialty}</div>}
-                </div>
-                <div style={{marginTop:16}}>
-                  <label style={S.fieldLabel}>Cuisine Specialties *</label>
-                  <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>
-                    {ALL_CUISINES.map(c=><button key={c} onClick={()=>setRegForm(f=>({...f,cuisineSpecialties:f.cuisineSpecialties.includes(c)?f.cuisineSpecialties.filter(s=>s!==c):[...f.cuisineSpecialties,c]}))} style={{padding:"6px 14px",borderRadius:10,border:`1px solid ${regForm.cuisineSpecialties.includes(c)?"#c0392b":"#e5e7eb"}`,background:regForm.cuisineSpecialties.includes(c)?"#fff5f5":"#fff",color:regForm.cuisineSpecialties.includes(c)?"#c0392b":"#6b7280",fontSize:12,cursor:"pointer"}}>{c}</button>)}
+                )}
+
+                {/* Step 1: Services */}
+                {regStep===1&&(
+                  <div>
+                    <div style={{marginBottom:16}}>
+                      <label style={S.fieldLabel}>Event Types *</label>
+                      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>
+                        {EVENT_TYPES.map(et=><button key={et.id} onClick={()=>setRegForm(f=>({...f,specialty:f.specialty.includes(et.id)?f.specialty.filter(s=>s!==et.id):[...f.specialty,et.id]}))} style={{padding:"8px 16px",borderRadius:10,border:`2px solid ${regForm.specialty.includes(et.id)?"#c0392b":"#e5e7eb"}`,background:regForm.specialty.includes(et.id)?"#fff5f5":"#fff",color:regForm.specialty.includes(et.id)?"#c0392b":"#6b7280",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",gap:6}}><span>{et.icon}</span>{et.label}</button>)}
+                      </div>
+                      {regErrors.specialty&&<div style={{fontSize:11,color:"#ef4444",marginTop:4}}>{regErrors.specialty}</div>}
+                    </div>
+                    <div style={{marginBottom:16}}>
+                      <label style={S.fieldLabel}>Cuisine Specialties *</label>
+                      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>
+                        {ALL_CUISINES.map(c=><button key={c} onClick={()=>setRegForm(f=>({...f,cuisineSpecialties:f.cuisineSpecialties.includes(c)?f.cuisineSpecialties.filter(s=>s!==c):[...f.cuisineSpecialties,c]}))} style={{padding:"6px 14px",borderRadius:10,border:`1.5px solid ${regForm.cuisineSpecialties.includes(c)?"#c0392b":"#e5e7eb"}`,background:regForm.cuisineSpecialties.includes(c)?"#fff5f5":"#fff",color:regForm.cuisineSpecialties.includes(c)?"#c0392b":"#6b7280",fontSize:12,cursor:"pointer"}}>{c}</button>)}
+                      </div>
+                      {regErrors.cuisineSpecialties&&<div style={{fontSize:11,color:"#ef4444",marginTop:4}}>{regErrors.cuisineSpecialties}</div>}
+                    </div>
+                    <div style={{marginBottom:16}}>
+                      <label style={S.fieldLabel}>Service Types *</label>
+                      <div style={{display:"flex",gap:8,marginTop:6}}>
+                        {Object.values(SVC).map(svc=><button key={svc.id} onClick={()=>setRegForm(f=>({...f,serviceTypes:f.serviceTypes.includes(svc.id)?f.serviceTypes.filter(s=>s!==svc.id):[...f.serviceTypes,svc.id]}))} style={{flex:1,padding:"14px",borderRadius:12,border:`2px solid ${regForm.serviceTypes.includes(svc.id)?svc.color:"#e5e7eb"}`,background:regForm.serviceTypes.includes(svc.id)?svc.grad:"#fff",cursor:"pointer",textAlign:"center"}}><div style={{fontSize:22}}>{svc.icon}</div><div style={{fontSize:12,fontWeight:700,color:svc.color,marginTop:4}}>{svc.label}</div></button>)}
+                      </div>
+                      {regErrors.serviceTypes&&<div style={{fontSize:11,color:"#ef4444",marginTop:4}}>{regErrors.serviceTypes}</div>}
+                    </div>
+                    <div>
+                      <label style={S.fieldLabel}>Delivery Coverage (Pincodes)</label>
+                      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>
+                        {Object.entries(PINCODE_COORDS).map(([pin,data])=><button key={pin} onClick={()=>setRegForm(f=>({...f,deliveryPincodes:f.deliveryPincodes.includes(pin)?f.deliveryPincodes.filter(p=>p!==pin):[...f.deliveryPincodes,pin]}))} style={{padding:"6px 12px",borderRadius:8,border:`1.5px solid ${regForm.deliveryPincodes.includes(pin)?"#c0392b":"#e5e7eb"}`,background:regForm.deliveryPincodes.includes(pin)?"#fff5f5":"#fff",color:regForm.deliveryPincodes.includes(pin)?"#c0392b":"#6b7280",fontSize:11,cursor:"pointer"}}>{pin} · {data.area}</button>)}
+                      </div>
+                      <div style={{fontSize:11,color:"#9ca3af",marginTop:4}}>Leave empty = serves all areas</div>
+                    </div>
                   </div>
-                  {regErrors.cuisineSpecialties&&<div style={{fontSize:11,color:"#ef4444",marginTop:4}}>{regErrors.cuisineSpecialties}</div>}
-                </div>
-                <div style={{marginTop:16}}>
-                  <label style={S.fieldLabel}>Service Types *</label>
-                  <div style={{display:"flex",gap:8,marginTop:6}}>
-                    {Object.values(SVC).map(svc=><button key={svc.id} onClick={()=>setRegForm(f=>({...f,serviceTypes:f.serviceTypes.includes(svc.id)?f.serviceTypes.filter(s=>s!==svc.id):[...f.serviceTypes,svc.id]}))} style={{flex:1,padding:"12px",borderRadius:12,border:`2px solid ${regForm.serviceTypes.includes(svc.id)?svc.color:"#e5e7eb"}`,background:regForm.serviceTypes.includes(svc.id)?svc.grad:"#fff",cursor:"pointer",textAlign:"center"}}><div style={{fontSize:22}}>{svc.icon}</div><div style={{fontSize:12,fontWeight:700,color:svc.color,marginTop:4}}>{svc.label}</div></button>)}
+                )}
+
+                {/* Step 2: Capacity & Pricing */}
+                {regStep===2&&(
+                  <div>
+                    <div style={{display:"flex",gap:12,marginBottom:16}}>
+                      <div style={{flex:1}}>
+                        <label style={S.fieldLabel}>Minimum Guests</label>
+                        <input type="number" style={S.inp2} value={regForm.minGuests} onChange={e=>setRegForm({...regForm,minGuests:parseInt(e.target.value)||1})} min={1}/>
+                      </div>
+                      <div style={{flex:1}}>
+                        <label style={S.fieldLabel}>Maximum Guests</label>
+                        <input type="number" style={S.inp2} value={regForm.maxGuests} onChange={e=>setRegForm({...regForm,maxGuests:parseInt(e.target.value)||500})} min={10}/>
+                      </div>
+                    </div>
+                    <div style={{display:"flex",gap:12,marginBottom:16}}>
+                      <div style={{flex:1}}>
+                        <label style={S.fieldLabel}>Price per Plate — MIN (₹)</label>
+                        <input type="number" style={S.inp2} value={regForm.pricePerPlateMin} onChange={e=>setRegForm({...regForm,pricePerPlateMin:parseInt(e.target.value)||100})} min={50}/>
+                      </div>
+                      <div style={{flex:1}}>
+                        <label style={S.fieldLabel}>Price per Plate — MAX (₹)</label>
+                        <input type="number" style={S.inp2} value={regForm.pricePerPlateMax} onChange={e=>setRegForm({...regForm,pricePerPlateMax:parseInt(e.target.value)||2000})} min={100}/>
+                      </div>
+                    </div>
+                    {regErrors.pricing&&<div style={{fontSize:11,color:"#ef4444",marginBottom:8}}>{regErrors.pricing}</div>}
+                    <div style={{display:"flex",gap:12,marginBottom:16}}>
+                      <div style={{flex:1}}>
+                        <label style={S.fieldLabel}>Preparation Time</label>
+                        <select value={regForm.turnaround} onChange={e=>setRegForm({...regForm,turnaround:e.target.value})} style={{...S.inp2,width:"100%"}}>
+                          {["1–2 hrs","2–3 hrs","3–4 hrs","4–6 hrs","Same day","Next day"].map(t=><option key={t} value={t}>{t}</option>)}
+                        </select>
+                      </div>
+                      <div style={{flex:1}}>
+                        <label style={S.fieldLabel}>Price Tier</label>
+                        <select value={regForm.priceRange} onChange={e=>setRegForm({...regForm,priceRange:e.target.value})} style={{...S.inp2,width:"100%"}}>
+                          {["₹ (Budget)","₹₹ (Moderate)","₹₹₹ (Premium)","₹₹₹₹ (Luxury)"].map(p=><option key={p} value={p.split(" ")[0]}>{p}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <div style={{marginBottom:16}}>
+                      <label style={S.fieldLabel}>Available Days</label>
+                      <div style={{display:"flex",gap:6,marginTop:6}}>
+                        {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d=><button key={d} onClick={()=>setRegForm(f=>({...f,availableDays:f.availableDays.includes(d)?f.availableDays.filter(x=>x!==d):[...f.availableDays,d]}))} style={{flex:1,padding:"8px 4px",borderRadius:8,border:`1.5px solid ${regForm.availableDays.includes(d)?"#c0392b":"#e5e7eb"}`,background:regForm.availableDays.includes(d)?"#fff5f5":"#fff",color:regForm.availableDays.includes(d)?"#c0392b":"#9ca3af",fontSize:11,fontWeight:600,cursor:"pointer"}}>{d}</button>)}
+                      </div>
+                    </div>
+                    <div>
+                      <label style={S.fieldLabel}>Cancellation Policy</label>
+                      <select value={regForm.cancellationPolicy} onChange={e=>setRegForm({...regForm,cancellationPolicy:e.target.value})} style={{...S.inp2,width:"100%"}}>
+                        {["24hrs","48hrs","72hrs","No refund","Flexible"].map(c=><option key={c} value={c}>{c} notice required</option>)}
+                      </select>
+                    </div>
                   </div>
-                  {regErrors.serviceTypes&&<div style={{fontSize:11,color:"#ef4444",marginTop:4}}>{regErrors.serviceTypes}</div>}
+                )}
+
+                {/* Step 3: Menu & Extras */}
+                {regStep===3&&(
+                  <div>
+                    <div style={{marginBottom:16}}>
+                      <label style={S.fieldLabel}>Signature Dishes (top 5–10, comma separated)</label>
+                      <textarea value={regForm.signatureDishes} onChange={e=>setRegForm({...regForm,signatureDishes:e.target.value})} placeholder="Kosha Mangsho, Chingri Malai Curry, Luchi-Alur Dom, Biryani, Mishti Doi..." style={{...S.inp2,minHeight:60,resize:"vertical"}}/>
+                      <div style={{fontSize:11,color:"#9ca3af",marginTop:2}}>These are used for AI search & menu matching</div>
+                    </div>
+                    <div style={{marginBottom:16}}>
+                      <label style={S.fieldLabel}>Menu Categories Offered</label>
+                      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>
+                        {Object.keys(MENU_ITEMS).map(cat=><button key={cat} onClick={()=>setRegForm(f=>({...f,menuHighlights:f.menuHighlights.includes(cat)?f.menuHighlights.filter(c=>c!==cat):[...f.menuHighlights,cat]}))} style={{padding:"6px 14px",borderRadius:10,border:`1.5px solid ${regForm.menuHighlights.includes(cat)?"#c0392b":"#e5e7eb"}`,background:regForm.menuHighlights.includes(cat)?"#fff5f5":"#fff",color:regForm.menuHighlights.includes(cat)?"#c0392b":"#6b7280",fontSize:12,cursor:"pointer"}}>{cat}</button>)}
+                      </div>
+                    </div>
+                    <div style={{marginBottom:16}}>
+                      <label style={S.fieldLabel}>Service Features</label>
+                      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginTop:6}}>
+                        {[{key:"vegOnly",label:"🥬 Vegetarian Only",desc:"Only serves veg food"},{key:"hasLiveCounter",label:"🔥 Live Counters",desc:"Provides live cooking stations"},{key:"providesDecor",label:"🎊 Decoration",desc:"Provides event decoration"},{key:"providesStaff",label:"👨‍🍳 Staff Included",desc:"Serving staff provided"}].map(f=>(
+                          <button key={f.key} onClick={()=>setRegForm(r=>({...r,[f.key]:!r[f.key]}))} style={{padding:"12px",borderRadius:10,border:`2px solid ${regForm[f.key]?"#c0392b":"#e5e7eb"}`,background:regForm[f.key]?"#fff5f5":"#fff",cursor:"pointer",textAlign:"left"}}>
+                            <div style={{fontSize:13,fontWeight:regForm[f.key]?700:500,color:regForm[f.key]?"#c0392b":"#374151"}}>{f.label}</div>
+                            <div style={{fontSize:11,color:"#9ca3af",marginTop:2}}>{f.desc}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label style={S.fieldLabel}>Payment Modes Accepted</label>
+                      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>
+                        {["Cash","UPI","Card","Bank Transfer","Cheque"].map(m=><button key={m} onClick={()=>setRegForm(f=>({...f,paymentModes:f.paymentModes.includes(m)?f.paymentModes.filter(x=>x!==m):[...f.paymentModes,m]}))} style={{padding:"6px 14px",borderRadius:10,border:`1.5px solid ${regForm.paymentModes.includes(m)?"#c0392b":"#e5e7eb"}`,background:regForm.paymentModes.includes(m)?"#fff5f5":"#fff",color:regForm.paymentModes.includes(m)?"#c0392b":"#6b7280",fontSize:12,cursor:"pointer"}}>{m}</button>)}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Navigation */}
+                <div style={{display:"flex",gap:10,marginTop:24}}>
+                  {regStep>0&&<button onClick={()=>setRegStep(s=>s-1)} style={{...S.ghostBtn,flex:1,padding:"12px 0"}}>← Back</button>}
+                  {regStep<3?(
+                    <button onClick={()=>setRegStep(s=>s+1)} style={{...S.primaryBtn,flex:1,marginTop:0}}>Next →</button>
+                  ):(
+                    <button onClick={submitReg} style={{...S.primaryBtn,flex:1,marginTop:0}}>Add Partner ✅</button>
+                  )}
                 </div>
-                <div style={{display:"flex",gap:12,marginTop:16}}>
-                  <div style={{flex:1}}><label style={S.fieldLabel}>Price Range</label><select value={regForm.priceRange} onChange={e=>setRegForm({...regForm,priceRange:e.target.value})} style={{...S.inp2,width:"100%"}}>{["₹","₹₹","₹₹₹","₹₹₹₹"].map(p=><option key={p} value={p}>{p}</option>)}</select></div>
-                  <div style={{flex:1}}><label style={S.fieldLabel}>Turnaround</label><select value={regForm.turnaround} onChange={e=>setRegForm({...regForm,turnaround:e.target.value})} style={{...S.inp2,width:"100%"}}>{["1–2 hrs","2–3 hrs","3–4 hrs","4–6 hrs","Next day"].map(t=><option key={t} value={t}>{t}</option>)}</select></div>
-                </div>
-                <button onClick={submitReg} style={{...S.primaryBtn,marginTop:20}}>Add Partner ✅</button>
               </>
               )}
             </div>
