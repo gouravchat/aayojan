@@ -6,7 +6,7 @@
 // ─── Stage 1: Candidate Retrieval ────────────────────────────────────────────
 // Filters caterers by hard constraints — only eligible candidates pass through.
 export function candidateRetrieval(caterers, filters) {
-  const { serviceType, eventType, guestCount, cuisines, maxDistanceKm = 15 } = filters;
+  const { serviceType, eventType, guestCount, cuisines, maxDistanceKm = 15, dietaryPref = "any", dietaryFilter } = filters;
 
   return caterers.filter(c => {
     // Must support the requested service type
@@ -28,6 +28,12 @@ export function candidateRetrieval(caterers, filters) {
     if (guestCount) {
       if (c.maxGuests && guestCount > c.maxGuests) return false;
       if (c.minGuests && guestCount < c.minGuests && serviceType === "full") return false;
+    }
+
+    // Dietary preference filter — critical for religious events
+    if (dietaryFilter && dietaryPref !== "any") {
+      const cs = c.cuisineSpecialties || [];
+      if (!dietaryFilter(cs)) return false;
     }
 
     return true;
@@ -212,11 +218,12 @@ export function matchCaterers(caterers, params) {
   const {
     serviceType, eventType, guestCount, perPlateBudget,
     selectedItems, maxDistanceKm = 15, topN = 5,
+    dietaryPref = "any", dietaryFilter,
   } = params;
 
-  // Stage 1: Candidate Retrieval
+  // Stage 1: Candidate Retrieval (with dietary filtering)
   const candidates = candidateRetrieval(caterers, {
-    serviceType, eventType, guestCount, maxDistanceKm,
+    serviceType, eventType, guestCount, maxDistanceKm, dietaryPref, dietaryFilter,
   });
 
   // Stage 2: Ranker
@@ -241,14 +248,17 @@ export function matchCaterers(caterers, params) {
 }
 
 // ─── Anonymous Display Helpers ───────────────────────────────────────────────
-const ANON_LABELS = ["Caterer A", "Caterer B", "Caterer C", "Caterer D", "Caterer E",
-  "Caterer F", "Caterer G", "Caterer H", "Caterer I", "Caterer J"];
-const ANON_ICONS = ["🍽️", "🥘", "🫕", "🥗", "🍛", "🥞", "🎂", "🍲", "🧆", "🍜"];
+const ANON_LABELS = [
+  "Saffron Kitchen", "Golden Spoon", "Silver Platter", "Copper Pot", "Jade Garden",
+  "Crystal Bowl", "Ruby Flame", "Pearl Dining", "Emerald Table", "Amber Feast",
+  "Ivory Kitchen", "Coral Kitchen", "Bronze Hearth", "Opal Cuisine", "Sapphire Bites",
+];
+const ANON_ICONS = ["🏵️", "🥄", "🍽️", "🫕", "🌿", "🥣", "🔥", "✨", "💎", "🍯", "🦢", "🌺", "⚱️", "💫", "💠"];
 
 export function anonymize(caterers) {
   return caterers.map((c, i) => ({
     ...c,
-    _anonLabel: ANON_LABELS[i] || `Caterer ${String.fromCharCode(65 + i)}`,
+    _anonLabel: ANON_LABELS[i] || `Kitchen ${String.fromCharCode(65 + i)}`,
     _anonIcon: ANON_ICONS[i] || "🍽️",
     _realName: c.name,
     _realPhone: c.phone,

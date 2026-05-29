@@ -68,7 +68,28 @@ const EVENT_TYPES=[
   {id:"religious",label:"Religious",icon:"🪔",desc:"Pujo, brata & community feasts"},
 ];
 
-const STEPS=["Service","Location","Event","Guests & Budget","Menu","Quotes","Order"];
+const DIETARY_TYPES=[
+  {id:"any",label:"All Types",icon:"🍽️",desc:"Veg + Non-Veg, no restrictions",color:"#6b7280"},
+  {id:"veg",label:"Pure Vegetarian",icon:"🥬",desc:"No meat, no fish, no egg",color:"#16a34a"},
+  {id:"eggetarian",label:"Eggetarian",icon:"🥚",desc:"Vegetarian + eggs allowed",color:"#eab308"},
+  {id:"nonveg",label:"Non-Vegetarian",icon:"🍗",desc:"All food types welcome",color:"#ef4444"},
+  {id:"jain",label:"Jain",icon:"☸️",desc:"No onion, no garlic, no root vegetables",color:"#8b5cf6"},
+  {id:"satvik",label:"Satvik",icon:"🙏",desc:"No onion, no garlic, simple pure cooking",color:"#f97316"},
+  {id:"vegan",label:"Vegan",icon:"🌱",desc:"No dairy, no honey, no animal products",color:"#059669"},
+];
+
+// Map dietary type → which cuisineSpecialties tags qualify a caterer
+const DIETARY_FILTERS={
+  any:()=>true,
+  nonveg:(cs)=>!cs.includes("Vegetarian Only")&&!cs.includes("Jain"),
+  eggetarian:()=>true, // most can do egg
+  veg:(cs)=>cs.includes("Vegetarian Only")||cs.includes("Jain")||cs.includes("Multi-cuisine"),
+  jain:(cs)=>cs.includes("Jain"),
+  satvik:(cs)=>cs.includes("Vegetarian Only")||cs.includes("Jain"), // satvik subset of veg
+  vegan:(cs)=>cs.includes("Vegetarian Only")||cs.includes("Vegan"),
+};
+
+const STEPS=["Service","Location","Event & Diet","Guests & Budget","Menu","Quotes","Order"];
 const DEMO_OTP="1234",BASE_KM=5,KM_RATE=20,WAIT_HRS=48;
 const PHONE_UNLOCK_FEE=99;
 const FOOD_TASTING_FEE=199;
@@ -429,6 +450,7 @@ export default function AayojanApp(){
   const [pincodeError,setPincodeError]=useState("");
   const [customerCoords,setCustomerCoords]=useState(null);
   const [eventType,setEventType]=useState(null);
+  const [dietaryPref,setDietaryPref]=useState("any");
   const [guestCount,setGuestCount]=useState(100);
   const [perPlateBudget,setPerPlateBudget]=useState(500);
   const [selectedItems,setSelectedItems]=useState([]);
@@ -619,7 +641,7 @@ export default function AayojanApp(){
     setLoading(true);
     setTimeout(()=>{
       // Run 3-stage matching pipeline
-      const result=matchCaterers(nearbyCaterers,{serviceType,eventType,guestCount,perPlateBudget,selectedItems,maxDistanceKm:15,topN:5});
+      const result=matchCaterers(nearbyCaterers,{serviceType,eventType,guestCount,perPlateBudget,selectedItems,maxDistanceKm:15,topN:5,dietaryPref,dietaryFilter:DIETARY_FILTERS[dietaryPref]||DIETARY_FILTERS.any});
       const anonResults=anonymize(result.results);
       const matched=anonResults.map(c=>{
         // Generate realistic quote based on caterer's price range + user budget
@@ -630,7 +652,7 @@ export default function AayojanApp(){
         const base=ppa*guestCount;const tf=c.surcharge*Math.ceil(guestCount/50);
         return{...c,quoteCode:`${c.id.toUpperCase()}-${Math.random().toString(36).substring(2,6).toUpperCase()}`,perPlateActual:ppa,basePrice:base,travelSurcharge:tf,totalPrice:base+tf,itemsCovered:selectedItems.length,withinBudget:ppa<=perPlateBudget};
       }).sort((a,b)=>a.perPlateActual-b.perPlateActual);
-      const now=new Date();const qr={id:`QR-${Date.now()}`,customerId:user?.uid,customerEmail:user?.email,catererIds:matched.map(c=>c.id),eventType,serviceType,guestCount,perPlateBudget,menuItems:selectedItems,customerPincode,sentAt:now.toISOString(),expiresAt:new Date(now.getTime()+WAIT_HRS*3600000).toISOString(),status:"Awaiting Responses",pipeline:result.pipeline,whatsappLog:matched.map(c=>({catererId:c.id,catererName:c._anonLabel,maskedPhone:"••••••••••",sentAt:now.toISOString(),status:"Sent ✅"}))};
+      const now=new Date();const qr={id:`QR-${Date.now()}`,customerId:user?.uid,customerEmail:user?.email,catererIds:matched.map(c=>c.id),eventType,serviceType,dietaryPref,guestCount,perPlateBudget,menuItems:selectedItems,customerPincode,sentAt:now.toISOString(),expiresAt:new Date(now.getTime()+WAIT_HRS*3600000).toISOString(),status:"Awaiting Responses",pipeline:result.pipeline,whatsappLog:matched.map(c=>({catererId:c.id,catererName:c._anonLabel,maskedPhone:"••••••••••",sentAt:now.toISOString(),status:"Sent ✅"}))};
       DB.saveQR(qr);setQuotationRequest(qr);setWhatsappSent(qr.whatsappLog);setQuotes(matched);setLoading(false);setStep(5);
     },1800);
   };
@@ -671,7 +693,7 @@ export default function AayojanApp(){
   const copyCode=(code)=>{navigator.clipboard?.writeText(code);setCopiedCode(code);setTimeout(()=>setCopiedCode(null),2000);};
   const toggleItem=(item)=>setSelectedItems(prev=>prev.includes(item)?prev.filter(i=>i!==item):[...prev,item]);
   const addCustomItem=()=>{if(customItem.trim()&&!selectedItems.includes(customItem.trim())){setSelectedItems(prev=>[...prev,customItem.trim()]);setCustomItem("");}};
-  const resetApp=()=>{setStep(0);setServiceType(null);setQuotes([]);setSelectedItems([]);setEventType(null);setGuestCount(100);setPerPlateBudget(500);setCustomerPincode("");setCustomerCoords(null);setSelectedQuote(null);setOrderPlaced(null);setQuotationRequest(null);setWhatsappSent([]);setDeliveryAddress({flat:"",building:"",street:"",landmark:"",pincode:"",city:"Kolkata",state:"West Bengal"});};
+  const resetApp=()=>{setStep(0);setServiceType(null);setQuotes([]);setSelectedItems([]);setEventType(null);setDietaryPref("any");setGuestCount(100);setPerPlateBudget(500);setCustomerPincode("");setCustomerCoords(null);setSelectedQuote(null);setOrderPlaced(null);setQuotationRequest(null);setWhatsappSent([]);setDeliveryAddress({flat:"",building:"",street:"",landmark:"",pincode:"",city:"Kolkata",state:"West Bengal"});};
 
   if(authLoading) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",background:"var(--bg-primary)"}}><div style={{textAlign:"center"}}><div style={{fontSize:48,marginBottom:12}}>🍛</div><div style={{color:"var(--text-secondary)"}}>Loading...</div></div></div>;
 
@@ -1396,15 +1418,39 @@ export default function AayojanApp(){
               <button onClick={handlePincodeNext} disabled={customerPincode.length!==6} style={{...S.primaryBtn,background:accentGrad,opacity:customerPincode.length===6?1:0.4}}>Find Caterers Near Me →</button>
             </div>}
 
-            {/* Step 2: Event */}
+            {/* Step 2: Event + Dietary */}
             {step===2&&<div>
               <h2 style={S.cardTitle}>What's the occasion?</h2>
               <p style={{fontSize:14,color:"#6b7280",marginBottom:18}}>Near {customerCoords?.area} · {stCfg?.label}</p>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:20}}>
-                {EVENT_TYPES.map(e=><button key={e.id} onClick={()=>setEventType(e.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:7,padding:"18px 12px",border:`2px solid ${eventType===e.id?accent:"#e5e7eb"}`,borderRadius:12,cursor:"pointer",background:eventType===e.id?"#fff5f5":"#fff",transform:eventType===e.id?"translateY(-2px)":"none",transition:"all 0.2s"}}>
-                  <span style={{fontSize:32}}>{e.icon}</span><span style={{fontSize:14,fontWeight:700,color:"#1f2937"}}>{e.label}</span><span style={{fontSize:11,color:"#9ca3af",textAlign:"center"}}>{e.desc}</span>
+                {EVENT_TYPES.map(e=><button key={e.id} onClick={()=>{setEventType(e.id);if(e.id==="religious")setDietaryPref("satvik");else if(dietaryPref==="satvik"&&e.id!=="religious")setDietaryPref("any");}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:7,padding:"18px 12px",border:`2px solid ${eventType===e.id?accent:"var(--border-color, #e5e7eb)"}`,borderRadius:12,cursor:"pointer",background:eventType===e.id?"#fff5f5":"var(--bg-card, #fff)",transform:eventType===e.id?"translateY(-2px)":"none",transition:"all 0.2s"}}>
+                  <span style={{fontSize:32}}>{e.icon}</span><span style={{fontSize:14,fontWeight:700,color:"var(--text-primary, #1f2937)"}}>{e.label}</span><span style={{fontSize:11,color:"#9ca3af",textAlign:"center"}}>{e.desc}</span>
                 </button>)}
               </div>
+
+              {/* Dietary Preference */}
+              {eventType&&<div style={{borderTop:"1px solid var(--border-color, #fde8d8)",paddingTop:18,marginBottom:18}}>
+                <div style={{fontSize:12,fontWeight:700,color:"var(--text-primary, #374151)",textTransform:"uppercase",letterSpacing:"0.07em",marginBottom:4}}>🥗 Dietary Preference</div>
+                <p style={{fontSize:12,color:"#9ca3af",marginBottom:12}}>Only caterers matching your dietary needs will be shown</p>
+                {eventType==="religious"&&dietaryPref!=="veg"&&dietaryPref!=="jain"&&dietaryPref!=="satvik"&&dietaryPref!=="vegan"&&(
+                  <div style={{background:"#fffbeb",border:"1px solid #fde68a",borderRadius:8,padding:"8px 12px",fontSize:12,color:"#92400e",marginBottom:10}}>⚠️ Religious ceremonies typically require vegetarian/satvik food. We've set Satvik as default — you can change if needed.</div>
+                )}
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                  {DIETARY_TYPES.map(d=>{
+                    const selected=dietaryPref===d.id;
+                    const isVegType=["veg","jain","satvik","vegan"].includes(d.id);
+                    return <button key={d.id} onClick={()=>setDietaryPref(d.id)} style={{display:"flex",alignItems:"center",gap:10,padding:"12px 14px",border:`2px solid ${selected?d.color:"var(--border-color, #e5e7eb)"}`,borderRadius:10,cursor:"pointer",background:selected?`${d.color}10`:"var(--bg-card, #fff)",transition:"all 0.2s",textAlign:"left"}}>
+                      <span style={{fontSize:22,flexShrink:0}}>{d.icon}</span>
+                      <div>
+                        <div style={{fontSize:13,fontWeight:700,color:selected?d.color:"var(--text-primary, #1f2937)"}}>{d.label}</div>
+                        <div style={{fontSize:10,color:"#9ca3af",lineHeight:1.3}}>{d.desc}</div>
+                      </div>
+                      {isVegType&&<span style={{fontSize:9,padding:"2px 6px",borderRadius:4,background:"#f0fdf4",color:"#16a34a",border:"1px solid #bbf7d0",fontWeight:700,flexShrink:0,marginLeft:"auto"}}>VEG</span>}
+                    </button>;
+                  })}
+                </div>
+              </div>}
+
               <div style={{display:"flex",gap:10}}>
                 <button onClick={()=>setStep(1)} style={S.secondaryBtn}>← Back</button>
                 <button onClick={()=>setStep(3)} disabled={!eventType} style={{...S.primaryBtn,marginTop:0,flex:1,background:accentGrad,opacity:eventType?1:0.4}}>Continue →</button>
@@ -1511,7 +1557,7 @@ export default function AayojanApp(){
 
               {/* Summary */}
               <div style={{display:"flex",justifyContent:"space-around",background:"#fff5f5",border:"1px solid #fde8d8",borderRadius:10,padding:"10px",marginBottom:12}}>
-                {[["📍",customerPincode,"Pincode"],["👥",guestCount,"Guests"],[`💰`,`₹${perPlateBudget}`,serviceType==="full"?"Per Plate":"Per Portion"],["🍽️",selectedItems.length,"Dishes"]].map(([icon,val,lbl])=>(
+                {[["📍",customerPincode,"Pincode"],["👥",guestCount,"Guests"],[`💰`,`₹${perPlateBudget}`,serviceType==="full"?"Per Plate":"Per Portion"],["🍽️",selectedItems.length,"Dishes"],[DIETARY_TYPES.find(d=>d.id===dietaryPref)?.icon||"🍽️",DIETARY_TYPES.find(d=>d.id===dietaryPref)?.label||"Any","Diet"]].map(([icon,val,lbl])=>(
                   <div key={lbl} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:1}}>
                     <span style={{fontSize:14}}>{icon}</span><span style={{fontSize:14,fontWeight:800,color:accent}}>{val}</span><span style={{fontSize:9,color:"#9ca3af",textTransform:"uppercase",letterSpacing:"0.06em"}}>{lbl}</span>
                   </div>
