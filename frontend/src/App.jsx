@@ -1007,7 +1007,7 @@ export default function AayojanApp(){
                 </div>
               </div>
             ):(
-              <AayojanChatbot user={user} onOrderCreated={order=>{setChatOrderConfirmed(order);}} onLoginRequired={()=>setAuthStage("phone")}/>
+              <AayojanChatbot user={user} onOrderCreated={order=>{setChatOrderConfirmed(order);}} onLoginRequired={()=>setShowLogin(true)}/>
             )}
           </div>
         </div>
@@ -1446,11 +1446,11 @@ export default function AayojanApp(){
                 <span style={{fontSize:24}}>⏳</span>
                 <div><div style={{fontWeight:700,color:"#1f2937",marginBottom:2}}>Quotation in 48 Hours</div><div style={{fontSize:12,color:"#6b7280",lineHeight:1.5}}>WhatsApp sent to <strong style={{color:accent}}>up to 5 caterers</strong> near you with budget <strong style={{color:accent}}>₹{perPlateBudget}/{serviceType==="full"?"plate":"portion"}</strong>.</div></div>
               </div>
-              {authStage!=="verified"&&selectedItems.length>0&&<div style={{background:"#fff7ed",border:"1px solid #fdba74",borderRadius:8,padding:"10px 14px",fontSize:12,color:"#6b7280",marginTop:10}}>🔒 Login required to send quote requests.</div>}
+              {!user&&selectedItems.length>0&&<div style={{background:"#fff7ed",border:"1px solid #fdba74",borderRadius:8,padding:"10px 14px",fontSize:12,color:"var(--text-secondary)",marginTop:10}}>🔒 Login required to send quote requests.</div>}
               <div style={{display:"flex",gap:10,marginTop:18}}>
                 <button onClick={()=>setStep(3)} style={S.secondaryBtn}>← Back</button>
                 <button onClick={generateQuotes} disabled={selectedItems.length===0} style={{...S.primaryBtn,marginTop:0,flex:1,background:accentGrad,opacity:selectedItems.length>0?1:0.4}}>
-                  {loading?"Sending...":authStage==="verified"?"Send Quotation Request 📲":"Login & Send Request 🔒"}
+                  {loading?"Sending...":user?"Send Quotation Request 📲":"Login & Send Request 🔒"}
                 </button>
               </div>
               {loading&&<div style={{marginTop:14,height:3,background:"#fde8d8",borderRadius:2,overflow:"hidden"}}><div style={{height:"100%",background:accentGrad,animation:"loadSlide 1.6s ease forwards"}}/></div>}
