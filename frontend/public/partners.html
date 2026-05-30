@@ -633,31 +633,31 @@
   <h2 class="section-title" style="color:white">Register as a Partner</h2>
   <p class="section-sub">Takes 2 minutes. Our team will reach out within 24 hours.</p>
 
-  <form class="partner-form" onsubmit="handleSubmit(event)">
+  <form class="partner-form" id="partnerForm" onsubmit="handleSubmit(event)">
     <div class="form-row">
       <div class="form-group">
         <label>Business / Your Name *</label>
-        <input type="text" placeholder="e.g. Das Catering Services" required>
+        <input type="text" id="bizName" placeholder="e.g. Das Catering Services" required>
       </div>
       <div class="form-group">
         <label>Contact Person *</label>
-        <input type="text" placeholder="Your full name" required>
+        <input type="text" id="contactName" placeholder="Your full name" required>
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>WhatsApp Number *</label>
-        <input type="tel" placeholder="+91 XXXXX XXXXX" required>
+        <input type="tel" id="whatsapp" placeholder="+91 XXXXX XXXXX" required>
       </div>
       <div class="form-group">
         <label>Email Address</label>
-        <input type="email" placeholder="you@email.com">
+        <input type="email" id="email" placeholder="you@email.com">
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>Primary Cuisine *</label>
-        <select required>
+        <select id="cuisine" required>
           <option value="" disabled selected>Select cuisine</option>
           <option>Bengali</option>
           <option>North Indian</option>
@@ -669,7 +669,7 @@
       </div>
       <div class="form-group">
         <label>Max Guests per Event *</label>
-        <select required>
+        <select id="capacity" required>
           <option value="" disabled selected>Select capacity</option>
           <option>Up to 50</option>
           <option>50–150</option>
@@ -681,7 +681,7 @@
     </div>
     <div class="form-group">
       <label>Service Areas (select all that apply)</label>
-      <select>
+      <select id="areas">
         <option>Newtown (Action Area I, II, III)</option>
         <option>Rajarhat</option>
         <option>Salt Lake (Sector V)</option>
@@ -690,7 +690,7 @@
     </div>
     <div class="form-group">
       <label>Tell us about your catering experience</label>
-      <textarea placeholder="e.g. 5 years in wedding catering, specialize in Bengali + Continental menus, have our own service staff..."></textarea>
+      <textarea id="experience" placeholder="e.g. 5 years in wedding catering, specialize in Bengali + Continental menus, have our own service staff..."></textarea>
     </div>
     <button type="submit" class="form-submit">Submit My Application →</button>
     <p class="form-note">🔒 Your information is private. We'll never share it without your consent.</p>
@@ -702,13 +702,67 @@
   <a href="faq.html">FAQ</a> · <a href="mailto:hello@aayojan.online">hello@aayojan.online</a></p>
 </footer>
 
+<!-- Firebase SDK for Firestore storage -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-  function handleSubmit(e) {
+  // Initialize Firebase (same config as main app)
+  firebase.initializeApp({
+    apiKey: "AIzaSyBPvK0452Kgkp0Oevxm1zMRUWiqKdhmaZA",
+    authDomain: "aayojan-a8c4f.firebaseapp.com",
+    projectId: "aayojan-a8c4f",
+    storageBucket: "aayojan-a8c4f.firebasestorage.app",
+    messagingSenderId: "673829788583",
+    appId: "1:673829788583:web:9f140241bf0466b197b482"
+  });
+  const db = firebase.firestore();
+
+  async function handleSubmit(e) {
     e.preventDefault();
     const btn = e.target.querySelector('.form-submit');
-    btn.textContent = '✅ Application Received! We\'ll WhatsApp you within 24 hrs.';
-    btn.style.background = '#2D7A4F';
+    btn.textContent = 'Submitting...';
     btn.disabled = true;
+
+    // Collect form data
+    const data = {
+      businessName: document.getElementById('bizName').value.trim(),
+      contactPerson: document.getElementById('contactName').value.trim(),
+      whatsapp: document.getElementById('whatsapp').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      cuisine: document.getElementById('cuisine').value,
+      capacity: document.getElementById('capacity').value,
+      serviceAreas: document.getElementById('areas').value,
+      experience: document.getElementById('experience').value.trim(),
+      submittedAt: new Date().toISOString(),
+      status: 'new'
+    };
+
+    // Save to Firestore
+    try {
+      await db.collection('partnerApplications').add(data);
+    } catch (err) {
+      console.log('Firestore save error (non-blocking):', err);
+    }
+
+    // Show success
+    btn.textContent = '✅ Application Received!';
+    btn.style.background = '#2D7A4F';
+
+    // Open WhatsApp with pre-filled message to owner
+    const msg = `🆕 New Partner Application!\n\n👤 ${data.businessName}\n📞 ${data.whatsapp}\n🍽️ ${data.cuisine} | ${data.capacity} guests\n📍 ${data.serviceAreas}\n💬 ${data.experience || 'No details'}`;
+    const waLink = `https://wa.me/918088434425?text=${encodeURIComponent(msg)}`;
+    
+    // Show confirmation message
+    const form = document.getElementById('partnerForm');
+    form.innerHTML = `
+      <div style="text-align:center;padding:2rem;">
+        <div style="font-size:3rem;margin-bottom:1rem;">🎉</div>
+        <h3 style="color:white;font-size:1.3rem;margin-bottom:0.8rem;">Application Received!</h3>
+        <p style="color:#aaa;margin-bottom:1.5rem;">We'll WhatsApp you within 24 hours to complete onboarding.</p>
+        <a href="${waLink}" target="_blank" style="display:inline-block;background:#25D366;color:white;padding:0.8rem 1.5rem;border-radius:8px;font-weight:600;text-decoration:none;">💬 Chat with us now on WhatsApp</a>
+        <p style="color:#666;font-size:0.8rem;margin-top:1rem;">Or we'll reach out to you at ${data.whatsapp}</p>
+      </div>
+    `;
   }
 </script>
 </body>
