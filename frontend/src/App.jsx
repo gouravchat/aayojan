@@ -1053,7 +1053,7 @@ export default function AayojanApp(){
         <div className="header-right" style={{display:"flex",alignItems:"center",gap:8}}>
           <button className="theme-toggle" onClick={()=>setDarkMode(!darkMode)} title={darkMode?"Switch to light mode":"Switch to dark mode"}>{darkMode?"☀️":"🌙"}</button>
           {view!=="landing"&&<button onClick={()=>navigate("landing")} style={S.ghostBtn}>← Home</button>}
-          <button onClick={()=>navigate("chat")} style={{...S.ghostBtn,borderColor:"#FF6B35",color:"#FF6B35",background:"#FFF7ED"}}>🤖 Partner Chat</button>
+          <button onClick={()=>navigate("chat")} style={{...S.ghostBtn,borderColor:"#FF6B35",color:"#FF6B35",background:"#FFF7ED"}}>💬 Hey Partner, Chat with us</button>
           {user?.isAdmin&&<button onClick={()=>{loadAdminData();navigate("admin");}} style={{...S.ghostBtn,borderColor:"#bbf7d0",color:"#16a34a",background:"#f0fdf4"}}>👑 Admin</button>}
           {user?<div style={{display:"flex",alignItems:"center",gap:8}}>
             <button onClick={openProfile} style={{display:"flex",alignItems:"center",gap:5,background:"#f0fdf4",border:"1px solid #bbf7d0",borderRadius:8,padding:"6px 10px",fontSize:12,color:"#16a34a",cursor:"pointer"}}>
@@ -1141,6 +1141,54 @@ export default function AayojanApp(){
              <div style={{width:24,height:38,borderRadius:12,border:"2px solid rgba(255,255,255,0.3)",display:"flex",justifyContent:"center",paddingTop:6}}>
                <div style={{width:3,height:8,borderRadius:3,background:"#fca5a5",animation:"scrollDot 2s infinite"}}/>
              </div>
+           </div>
+         </div>
+
+         {/* ── PARTNER PITCH — Bold catchy banner ────────────────────── */}
+         <div style={{padding:"36px 14px",background:"linear-gradient(135deg,#1a0800,#2d1200)",position:"relative",overflow:"hidden"}}>
+           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 80% 20%,rgba(255,107,53,0.12),transparent 50%)"}}/>
+           <div style={{position:"relative",zIndex:2,maxWidth:700,margin:"0 auto"}}>
+             <div style={{textAlign:"center",marginBottom:24}}>
+               <div style={{display:"inline-block",background:"rgba(255,107,53,0.15)",border:"1px solid rgba(255,107,53,0.4)",borderRadius:20,padding:"5px 16px",marginBottom:14}}>
+                 <span style={{fontSize:11,color:"#FF6B35",fontWeight:700,letterSpacing:1}}>👨‍🍳 FOR CATERERS</span>
+               </div>
+               <h2 style={{fontFamily:"'Playfair Display',Georgia,serif",fontSize:"clamp(24px,5vw,36px)",fontWeight:900,color:"#fff",lineHeight:1.2,marginBottom:10}}>
+                 Join Aayojan.<br/><span style={{color:"#FDE68A"}}>Zero Entry Barrier.</span>
+               </h2>
+               <p style={{fontSize:14,color:"rgba(255,255,255,0.7)",maxWidth:500,margin:"0 auto"}}>We bring customers to your WhatsApp. You cook. That's it.</p>
+             </div>
+
+             {/* Two big stat cards */}
+             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:24}} className="feat-grid">
+               <div style={{background:"rgba(255,255,255,0.04)",border:"2px solid rgba(74,222,128,0.4)",borderRadius:20,padding:"28px 20px",textAlign:"center",backdropFilter:"blur(8px)"}}>
+                 <div style={{fontSize:48,fontWeight:900,color:"#4ADE80",fontFamily:"'Playfair Display',serif",lineHeight:1}}>₹0</div>
+                 <div style={{fontSize:14,fontWeight:700,color:"#fff",marginTop:8}}>To Join</div>
+                 <div style={{fontSize:12,color:"rgba(255,255,255,0.5)",marginTop:4}}>No registration fee · No monthly charge · No app to install</div>
+               </div>
+               <div style={{background:"rgba(255,255,255,0.04)",border:"2px solid rgba(253,224,71,0.4)",borderRadius:20,padding:"28px 20px",textAlign:"center",backdropFilter:"blur(8px)"}}>
+                 <div style={{fontSize:48,fontWeight:900,color:"#FDE68A",fontFamily:"'Playfair Display',serif",lineHeight:1}}>3%</div>
+                 <div style={{fontSize:14,fontWeight:700,color:"#fff",marginTop:8}}>Only When You Earn</div>
+                 <div style={{fontSize:12,color:"rgba(255,255,255,0.5)",marginTop:4}}>No order = No charge · You get paid first, we invoice later</div>
+               </div>
+             </div>
+
+             {/* Bullet points */}
+             <div style={{display:"flex",flexWrap:"wrap",gap:12,justifyContent:"center",marginBottom:24}}>
+               {["📲 Leads on WhatsApp","⚡ 15-30 leads/month","🔓 No lock-in","🏆 First 10 partners: 0% forever"].map(t=>(
+                 <span key={t} style={{background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:24,padding:"8px 16px",fontSize:12,color:"rgba(255,255,255,0.85)",fontWeight:500}}>{t}</span>
+               ))}
+             </div>
+
+             {/* CTA */}
+             <div style={{textAlign:"center"}}>
+               <a href="/partners.html" style={{display:"inline-block",background:"linear-gradient(135deg,#FF6B35,#D4380D)",color:"#fff",padding:"15px 32px",borderRadius:30,fontSize:15,fontWeight:700,textDecoration:"none",boxShadow:"0 6px 24px rgba(255,107,53,0.35)",marginRight:12}}>
+                 🤝 Join as Partner — Free
+               </a>
+               <a href="https://wa.me/918088434425?text=Hi%20Aayojan!%20I%20am%20a%20caterer%20and%20want%20to%20know%20more" target="_blank" rel="noopener noreferrer" style={{display:"inline-block",background:"rgba(255,255,255,0.08)",color:"#fff",border:"1px solid rgba(255,255,255,0.25)",padding:"15px 24px",borderRadius:30,fontSize:14,fontWeight:600,textDecoration:"none"}}>
+                 💬 WhatsApp Us
+               </a>
+             </div>
+             <p style={{textAlign:"center",fontSize:11,color:"rgba(255,255,255,0.4)",marginTop:14}}>Already <strong style={{color:"#fca5a5"}}>12 caterers</strong> earning through Aayojan · Only 3 free-forever spots left</p>
            </div>
          </div>
 
