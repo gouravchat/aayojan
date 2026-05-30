@@ -1127,6 +1127,47 @@ export default function AayojanApp(){
            </div>
          </div>
 
+         {/* ── FOOD TASTING BANNER ─────────────────────────────────── */}
+         <div style={{padding:"48px 14px",background:"linear-gradient(135deg,#1a0a00,#2d1600)",position:"relative",overflow:"hidden"}}>
+           <div style={{position:"absolute",inset:0,background:"url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&q=60')",backgroundSize:"cover",backgroundPosition:"center",opacity:0.12}}/>
+           <div style={{position:"relative",zIndex:2,maxWidth:720,margin:"0 auto",textAlign:"center"}}>
+             <div style={{display:"inline-block",background:"linear-gradient(135deg,#F59E0B,#D97706)",color:"#fff",fontSize:11,fontWeight:700,padding:"6px 20px",borderRadius:20,letterSpacing:2,textTransform:"uppercase",marginBottom:16}}>✨ New on Aayojan</div>
+             <h2 style={{fontFamily:"'Playfair Display',Georgia,serif",fontSize:"clamp(28px,5vw,42px)",fontWeight:900,color:"#fff",marginBottom:8}}>Taste Before <span style={{color:"#FDE68A"}}>You Book!</span></h2>
+             <p style={{fontSize:14,color:"rgba(255,255,255,0.6)",marginBottom:32}}>বুক করার আগে চেখে দেখুন — আপনার পছন্দের caterer-এর রান্না</p>
+              
+             <div style={{display:"flex",gap:20,justifyContent:"center",flexWrap:"wrap",marginBottom:24}}>
+               {/* Veg Card */}
+               <div style={{background:"rgba(22,163,74,0.12)",border:"2px solid rgba(74,222,128,0.5)",borderRadius:20,padding:"28px 32px",textAlign:"center",minWidth:220}}>
+                 <div style={{fontSize:36,marginBottom:8}}>🥗</div>
+                 <div style={{fontSize:12,fontWeight:700,color:"#4ADE80",textTransform:"uppercase",letterSpacing:2,marginBottom:12,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                   <span style={{width:12,height:12,border:"2px solid #4ADE80",borderRadius:2,display:"inline-flex",alignItems:"center",justifyContent:"center"}}><span style={{width:6,height:6,background:"#4ADE80",borderRadius:"50%"}}/></span>
+                   Veg Tasting
+                 </div>
+                 <div style={{fontSize:42,fontWeight:900,color:"#4ADE80",lineHeight:1}}>₹199</div>
+                 <div style={{fontSize:14,color:"rgba(255,255,255,0.8)",fontWeight:600,marginTop:8}}>2 Sample Items</div>
+                 <div style={{fontSize:11,color:"rgba(255,255,255,0.5)",marginTop:4}}>Choose any 2 veg dishes</div>
+               </div>
+               {/* Non-Veg Card */}
+               <div style={{background:"rgba(220,38,38,0.12)",border:"2px solid rgba(252,165,165,0.5)",borderRadius:20,padding:"28px 32px",textAlign:"center",minWidth:220}}>
+                 <div style={{fontSize:36,marginBottom:8}}>🍗</div>
+                 <div style={{fontSize:12,fontWeight:700,color:"#FCA5A5",textTransform:"uppercase",letterSpacing:2,marginBottom:12,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                   <span style={{width:12,height:12,border:"2px solid #EF4444",borderRadius:2,display:"inline-flex",alignItems:"center",justifyContent:"center"}}><span style={{width:6,height:6,background:"#EF4444",borderRadius:"50%"}}/></span>
+                   Non-Veg Tasting
+                 </div>
+                 <div style={{fontSize:42,fontWeight:900,color:"#FCA5A5",lineHeight:1}}>₹399</div>
+                 <div style={{fontSize:14,color:"rgba(255,255,255,0.8)",fontWeight:600,marginTop:8}}>2 Sample Items</div>
+                 <div style={{fontSize:11,color:"rgba(255,255,255,0.5)",marginTop:4}}>Choose any 2 non-veg dishes</div>
+               </div>
+             </div>
+
+             <p style={{fontSize:13,color:"rgba(255,255,255,0.6)",marginBottom:20,lineHeight:1.8}}>
+               <strong style={{color:"#FDE68A"}}>How it works:</strong> Pick a caterer → Pay tasting fee → Get 2 dishes →<br/>
+               Love it? <strong style={{color:"#4ADE80"}}>Tasting fee adjusted against your final order ✅</strong>
+             </p>
+             <a href="https://wa.me/918088434425?text=Hi!%20I%20want%20to%20book%20a%20food%20tasting" target="_blank" rel="noopener noreferrer" style={{display:"inline-block",background:"linear-gradient(135deg,#25D366,#128C7E)",color:"#fff",padding:"14px 36px",borderRadius:30,fontSize:15,fontWeight:700,textDecoration:"none",boxShadow:"0 4px 16px rgba(37,211,102,0.3)"}}>📱 Book a Tasting — WhatsApp Us</a>
+           </div>
+         </div>
+
          {/* ── PARTNER CATERERS — with revolving food background ─────────── */}
          <div style={{position:"relative",padding:"48px 14px",overflow:"hidden"}}>
            {/* Revolving food background */}
