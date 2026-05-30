@@ -36,7 +36,7 @@ app = FastAPI(
 )
 
 # CORS
-origins = os.getenv("CORS_ORIGINS", "http://localhost:5173,https://gouravchat.github.io,https://aayojanv1.github.io").split(",")
+origins = os.getenv("CORS_ORIGINS", "http://localhost:5173,https://gouravchat.github.io,https://aayojanv1.github.io,https://aayojan.online,https://www.aayojan.online").split(",")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

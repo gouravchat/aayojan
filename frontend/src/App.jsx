@@ -1047,49 +1047,64 @@ export default function AayojanApp(){
       ══════════════════════════════════════════════════════════════════════ */}
       {view==="landing"&&(
         <div style={{...S.page,...anim}}>
-          {/* Hero */}
-          <div style={{textAlign:"center",padding:"36px 0 28px",position:"relative"}}>
-           {/* Bengali alpona decorative border */}
-           <div style={{fontSize:16,letterSpacing:4,color:"#c0392b",marginBottom:8,opacity:0.6,fontFamily:"serif"}}>꧁ ✿ ❀ ✿ ❀ ✿ ꧂</div>
-           <div style={{display:"inline-block",background:"linear-gradient(135deg,#fff5f5,#fffbeb)",border:"1px solid #fca5a5",borderRadius:20,padding:"5px 16px",fontSize:12,color:"#c0392b",marginBottom:16,fontWeight:600,letterSpacing:"0.05em"}}>📍 নিউটাউন, কলকাতা · Serving Newtown & Surrounding Areas</div>
-           <h1 className="hero-title" style={{fontFamily:"'Playfair Display',serif",fontSize:42,fontWeight:700,lineHeight:1.15,marginBottom:8}}>
-             <span style={{color:"#1f2937"}}>স্বাগতম </span>
-             <span style={{background:"linear-gradient(135deg,#c0392b,#e74c3c)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>আয়োজন!</span>
-            </h1>
-           <p style={{fontSize:14,color:"#c0392b",fontWeight:600,marginBottom:6,fontStyle:"italic"}}>"ভোজনে আনন্দ, আয়োজনে আমরা"</p>
-           <p style={{fontSize:16,color:"#6b7280",maxWidth:520,margin:"0 auto 20px",lineHeight:1.6}}>আপনার উৎসব, আমাদের আয়োজন। From <strong>Annaprashan</strong> to <strong>Biye Bari</strong> — find the best caterers for every Bengali celebration.</p>
+         {/* Hero — Clean, Visual, Partner-focused */}
+         <div style={{textAlign:"center",padding:"28px 0 20px",position:"relative"}}>
+           <div style={{fontSize:14,letterSpacing:3,color:"#c0392b",marginBottom:6,opacity:0.5,fontFamily:"serif"}}>꧁ ✿ ❀ ✿ ꧂</div>
+           <h1 className="hero-title" style={{fontFamily:"'Playfair Display',serif",fontSize:38,fontWeight:700,lineHeight:1.15,marginBottom:6}}>
+             <span style={{background:"linear-gradient(135deg,#c0392b,#e74c3c)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>আয়োজন</span>
+           </h1>
+           <p style={{fontSize:15,color:"#374151",fontWeight:600,marginBottom:4}}>নিউটাউনের সেরা ক্যাটারিং প্ল্যাটফর্ম</p>
+           <p style={{fontSize:13,color:"#6b7280",marginBottom:20}}>Annaprashan থেকে Biye Bari — সব উৎসবে আমরা আছি</p>
 
-           {/* Bengali food showcase */}
-           <div style={{display:"flex",justifyContent:"center",gap:8,marginBottom:20,flexWrap:"wrap"}}>
-             {[["🍚","Biryani"],["🐟","Ilish"],["🍖","Kosha Mangsho"],["🦐","Chingri"],["🍮","Mishti Doi"],["🍡","Rasgolla"]].map(([emoji,name])=>(
-               <div key={name} style={{background:"#fff",border:"1px solid #fde8d8",borderRadius:12,padding:"8px 12px",display:"flex",alignItems:"center",gap:6,boxShadow:"0 1px 4px rgba(192,57,43,0.06)"}}>
-                 <span style={{fontSize:20}}>{emoji}</span>
-                 <span style={{fontSize:11,fontWeight:700,color:"#374151"}}>{name}</span>
+           {/* Partner Caterers — The Heroes */}
+           <div style={{background:"linear-gradient(135deg,#fff5f5,#fffbeb)",border:"1px solid #fde8d8",borderRadius:18,padding:"18px 20px",marginBottom:20}}>
+             <div style={{fontSize:10,fontWeight:800,color:"#c0392b",textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:12}}>🏆 আমাদের পার্টনার ক্যাটারার</div>
+             <div style={{display:"flex",justifyContent:"center",gap:12,flexWrap:"wrap",marginBottom:10}}>
+               {allCaterers.slice(0,6).map(c=>(
+                 <div key={c.id} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,minWidth:70}}>
+                   <div style={{width:48,height:48,borderRadius:"50%",background:"#fff",border:"2px solid #fca5a5",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,boxShadow:"0 2px 8px rgba(192,57,43,0.1)"}}>{c.logo}</div>
+                   <div style={{fontSize:9,fontWeight:700,color:"#374151",textAlign:"center",lineHeight:1.2,maxWidth:70}}>{c.name.split(" ").slice(0,2).join(" ")}</div>
+                   <div style={{fontSize:8,color:"#c0392b"}}>⭐{c.rating}</div>
+                 </div>
+               ))}
+             </div>
+             <div style={{fontSize:11,color:"#6b7280"}}>{allCaterers.length}+ verified caterers in Newtown & surroundings</div>
+           </div>
+
+           {/* Quick Stats — one line */}
+           <div style={{display:"flex",justifyContent:"center",gap:20,marginBottom:20}}>
+             {[["500+","Events"],["48hr","Quotes"],["10+","Areas"],["₹200-1800","Range"]].map(([val,lbl])=>(
+               <div key={lbl} style={{textAlign:"center"}}>
+                 <div style={{fontSize:18,fontWeight:900,color:"#c0392b"}}>{val}</div>
+                 <div style={{fontSize:9,color:"#9ca3af",textTransform:"uppercase"}}>{lbl}</div>
                </div>
              ))}
            </div>
 
-           {/* AI chatbot promo */}
-           <div style={{display:"flex",alignItems:"center",gap:14,background:"linear-gradient(135deg,#fff5f5,#fffbeb)",border:"1px solid #fca5a5",borderRadius:16,padding:"16px 20px",maxWidth:580,margin:"0 auto",textAlign:"left",flexWrap:"wrap"}}>
-             <div style={{width:44,height:44,borderRadius:12,background:"linear-gradient(135deg,#c0392b,#e74c3c)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>🤖</div>
-             <div style={{flex:1}}><div style={{fontWeight:800,color:"#1f2937",fontSize:15,marginBottom:2}}>আয়োজন AI চ্যাটবট</div><div style={{fontSize:12,color:"#6b7280"}}>বাংলায় বলুন বা English — AI builds your perfect catering order</div></div>
-             <button onClick={()=>navigate("chat")} style={{...S.primaryBtn,width:"auto",marginTop:0,padding:"10px 20px",fontSize:13,flexShrink:0}}>Chat Now →</button>
+           {/* CTA buttons */}
+           <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
+             <button onClick={()=>{navigate("app");setServiceType("full");setStep(1);}} style={{...S.primaryBtn,width:"auto",padding:"12px 24px",fontSize:14}}>🛎️ Book Full Catering</button>
+             <button onClick={()=>{navigate("app");setServiceType("bulk");setStep(1);}} style={{...S.secondaryBtn,width:"auto",padding:"12px 24px",fontSize:14,borderColor:"#c0392b",color:"#c0392b"}}>📦 Bulk Order</button>
+             <button onClick={()=>navigate("chat")} style={{...S.ghostBtn,width:"auto",padding:"12px 24px",fontSize:14,borderColor:"#fca5a5",color:"#c0392b",background:"#fff5f5"}}>🤖 AI Chat</button>
            </div>
-           <div style={{fontSize:16,letterSpacing:4,color:"#c0392b",marginTop:16,opacity:0.4,fontFamily:"serif"}}>꧁ ✿ ❀ ✿ ❀ ✿ ꧂</div>
          </div>
 
-         {/* ── Bengali Occasions Banner ─────────────────────────────────────── */}
-         <div style={{marginBottom:28,background:"linear-gradient(135deg,#fffbeb,#fff5f5)",border:"1px solid #fde8d8",borderRadius:18,padding:"20px 24px"}}>
-           <div style={{fontSize:12,fontWeight:800,color:"#c0392b",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:12,textAlign:"center"}}>🎊 বাঙালির উৎসবে আমরা আছি</div>
-           <div style={{display:"flex",flexWrap:"wrap",justifyContent:"center",gap:8}}>
-             {[["👶","অন্নপ্রাশন","Annaprashan"],["💍","বিয়ে","Wedding"],["🙏","পূজা","Pujo"],["🎂","জন্মদিন","Birthday"],["🎓","অভিষেক","Convocation"],["🏠","গৃহপ্রবেশ","Griha Pravesh"],["🪔","দীপাবলি","Diwali"],["👨‍💼","Corporate","Office Party"]].map(([icon,bn,en])=>(
-               <div key={en} style={{background:"#fff",border:"1px solid #fde8d8",borderRadius:10,padding:"8px 12px",textAlign:"center",minWidth:85}}>
-                 <div style={{fontSize:20}}>{icon}</div>
-                 <div style={{fontSize:11,fontWeight:700,color:"#1f2937"}}>{bn}</div>
-                 <div style={{fontSize:9,color:"#9ca3af"}}>{en}</div>
-               </div>
-             ))}
-           </div>
+         {/* Bengali food chips — compact */}
+         <div style={{display:"flex",justifyContent:"center",gap:6,marginBottom:20,flexWrap:"wrap"}}>
+           {[["🍚","Biryani"],["🐟","Ilish"],["🍖","Kosha Mangsho"],["🦐","Chingri"],["🍮","Mishti Doi"],["🍡","Rasgolla"],["🫓","Luchi"]].map(([emoji,name])=>(
+             <span key={name} style={{background:"#fff",border:"1px solid #fde8d8",borderRadius:20,padding:"4px 10px",fontSize:11,display:"flex",alignItems:"center",gap:4}}>
+               <span>{emoji}</span><span style={{fontWeight:600,color:"#374151"}}>{name}</span>
+             </span>
+           ))}
+         </div>
+
+         {/* Bengali Occasions — compact chips */}
+         <div style={{display:"flex",flexWrap:"wrap",justifyContent:"center",gap:6,marginBottom:24}}>
+           {[["👶","অন্নপ্রাশন"],["💍","বিয়ে"],["🙏","পূজা"],["🎂","জন্মদিন"],["🏠","গৃহপ্রবেশ"],["👨‍💼","Corporate"]].map(([icon,label])=>(
+             <span key={label} style={{background:"#fffbeb",border:"1px solid #fde8d8",borderRadius:20,padding:"5px 12px",fontSize:11,display:"flex",alignItems:"center",gap:4}}>
+               <span>{icon}</span><span style={{fontWeight:600,color:"#374151"}}>{label}</span>
+             </span>
+           ))}
          </div>
 
          {/* ── Bengali Culture Gallery ─────────────────────────────────────── */}
@@ -1129,69 +1144,28 @@ export default function AayojanApp(){
 
          {/* ── FOOD TASTING BANNER ─────────────────────────────────────────── */}
          <div className="tasting-banner" style={S.tastingBanner}>
-            <div style={{display:"flex",gap:14,alignItems:"flex-start",flex:1}}>
-              <div style={{fontSize:40,flexShrink:0}}>🍱</div>
-              <div>
-                <div style={{fontSize:11,fontWeight:700,color:"#fff",textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:4,opacity:0.85}}>New · Exclusive Offer</div>
-                <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:700,color:"#fff",marginBottom:6}}>Book a Food Tasting Session!</div>
-                <div style={{fontSize:13,color:"rgba(255,255,255,0.85)",lineHeight:1.6,marginBottom:8}}>
-                  Try before you order! Book a <strong>Bulk Food Delivery tasting</strong> — get 5–7 sample dishes delivered to your home. Taste the quality before committing to a big order.
-                </div>
-                <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-                  {["✓ 5–7 sample dishes","✓ Delivery to your home","✓ Bulk order caterers only","✓ Amount adjustable on final order"].map(f=><span key={f} style={{fontSize:12,color:"rgba(255,255,255,0.9)"}}>{f}</span>)}
-                </div>
-              </div>
-            </div>
-            <div style={{textAlign:"center",flexShrink:0}}>
-              <div style={{fontSize:36,fontWeight:900,color:"#fff",fontFamily:"'Playfair Display',serif",lineHeight:1}}>₹199</div>
-              <div style={{fontSize:11,color:"rgba(255,255,255,0.75)",marginBottom:10}}>per tasting session</div>
-              <button onClick={()=>{navigate("app");setServiceType("bulk");setStep(1);}} style={{background:"#fff",border:"none",borderRadius:10,padding:"10px 20px",color:"#c0392b",fontWeight:800,fontSize:14,cursor:"pointer",boxShadow:"0 4px 12px rgba(0,0,0,0.15)"}}>Book Tasting →</button>
-            </div>
-          </div>
+           <div style={{display:"flex",gap:14,alignItems:"flex-start",flex:1}}>
+             <div style={{fontSize:40,flexShrink:0}}>🍱</div>
+             <div>
+               <div style={{fontSize:11,fontWeight:700,color:"#fff",textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:4,opacity:0.85}}>✨ বিশেষ অফার</div>
+               <div style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:700,color:"#fff",marginBottom:6}}>Food Tasting Session — ₹199</div>
+               <div style={{fontSize:12,color:"rgba(255,255,255,0.85)",lineHeight:1.5}}>
+                 আগে চেখে দেখুন! 5–7 sample dishes বাড়িতে পৌঁছে যাবে।
+               </div>
+             </div>
+           </div>
+           <button onClick={()=>{navigate("app");setServiceType("bulk");setStep(1);}} style={{background:"#fff",border:"none",borderRadius:10,padding:"10px 20px",color:"#c0392b",fontWeight:800,fontSize:14,cursor:"pointer",boxShadow:"0 4px 12px rgba(0,0,0,0.15)",flexShrink:0}}>Book Tasting →</button>
+         </div>
 
-          {/* Service type selection */}
-          <div style={{marginBottom:40}}>
-            <h2 style={{...S.sectionTitle,textAlign:"center",marginBottom:6}}>Choose Your Service Type</h2>
-            <p style={{textAlign:"center",color:"#6b7280",fontSize:13,marginBottom:22}}>Select how you'd like your catering delivered</p>
-            <div className="svc-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
-              {Object.values(SVC).map(svc=>(
-                <button key={svc.id} onClick={()=>{setServiceType(svc.id);navigate("app");setStep(1);}}
-                  style={{border:`2px solid ${svc.border}`,borderRadius:18,padding:"24px 20px",cursor:"pointer",transition:"all 0.2s",textAlign:"left",display:"flex",flexDirection:"column",gap:10,background:svc.grad,boxShadow:"0 2px 12px rgba(192,57,43,0.08)"}}>
-                  <div style={{width:52,height:52,borderRadius:14,background:`rgba(${svc.accentRGB},0.12)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26}}>{svc.icon}</div>
-                  <div style={{fontSize:19,fontWeight:800,fontFamily:"'Playfair Display',serif",color:svc.color}}>{svc.label}</div>
-                  <div style={{fontSize:12,color:"#6b7280",lineHeight:1.4}}>{svc.tagline}</div>
-                  <div style={{display:"flex",flexDirection:"column",gap:3}}>{svc.features.map(f=><div key={f} style={{fontSize:12,color:"#374151"}}>✓ {f}</div>)}</div>
-                  <div style={{background:svc.btnGrad,color:"#fff",borderRadius:10,padding:"10px 0",fontSize:13,fontWeight:700,textAlign:"center",marginTop:4}}>Book {svc.label} →</div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="stats-grid" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10,marginBottom:36}}>
-            {[["🍽️",allCaterers.length+"+","Caterers"],["📍","10+","Pincodes"],["⭐","4.7","Avg Rating"],["🎉","500+","Events"]].map(([icon,val,lbl])=>(
-              <div key={lbl} style={{background:"#fff",border:"1px solid #fde8d8",borderRadius:14,padding:"16px 12px",textAlign:"center",boxShadow:"0 1px 4px rgba(192,57,43,0.06)"}}>
-                <div style={{fontSize:22,marginBottom:4}}>{icon}</div>
-                <div style={{fontSize:22,fontWeight:800,color:"#1f2937"}}>{val}</div>
-                <div style={{fontSize:10,color:"#9ca3af",textTransform:"uppercase",letterSpacing:"0.07em"}}>{lbl}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* How it works */}
-          <div style={{marginBottom:40}}>
-            <h2 style={S.sectionTitle}>How It Works — কিভাবে কাজ করে</h2>
-            <div className="how-grid" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
-              {[["🛎️","সেবা বাছুন","Full catering or bulk delivery"],["💬","AI-কে বলুন","Chat in Bengali or English"],["📍","পিনকোড দিন","5 km radius search"],["📲","48hr কোটেশন","WhatsApp to 5 caterers"]].map(([icon,title,desc],i)=>(
-                <div key={i} style={{background:"#fff",border:"1px solid #fde8d8",borderRadius:14,padding:"18px 12px",textAlign:"center",boxShadow:"0 1px 4px rgba(192,57,43,0.05)"}}>
-                  <div style={{fontSize:10,fontWeight:800,color:"#c0392b",textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:6}}>{i+1}</div>
-                  <div style={{fontSize:28,marginBottom:8}}>{icon}</div>
-                  <div style={{fontSize:13,fontWeight:700,color:"#1f2937",marginBottom:4}}>{title}</div>
-                  <div style={{fontSize:11,color:"#9ca3af",lineHeight:1.5}}>{desc}</div>
-                </div>
-              ))}
-            </div>
-          </div>
+         {/* How it works — compact 4 icons */}
+         <div style={{display:"flex",justifyContent:"space-around",margin:"24px 0",padding:"16px",background:"#fff",border:"1px solid #fde8d8",borderRadius:14}}>
+           {[["🛎️","সেবা বাছুন"],["💬","AI Chat"],["📍","পিনকোড"],["📲","48hr Quote"]].map(([icon,label],i)=>(
+             <div key={i} style={{textAlign:"center"}}>
+               <div style={{fontSize:22,marginBottom:2}}>{icon}</div>
+               <div style={{fontSize:10,fontWeight:700,color:"#374151"}}>{label}</div>
+             </div>
+           ))}
+         </div>
 
           {/* Featured caterers */}
           <div style={{marginBottom:40}}>
