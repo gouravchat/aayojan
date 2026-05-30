@@ -1076,7 +1076,7 @@ export default function AayojanApp(){
          {/* ── HERO SECTION — Clean, bright, focused ─────────────────── */}
          <div style={{position:"relative",minHeight:"70vh",display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden",background:"linear-gradient(180deg,var(--bg-primary) 0%,var(--bg-secondary) 100%)"}}>
            {/* Subtle accent glow */}
-           <div style={{position:"absolute",top:"-100px",left:"50%",transform:"translateX(-50%)",width:600,height:400,background:"radial-gradient(ellipse, rgba(192,57,43,0.08) 0%, transparent 60%)",pointerEvents:"none"}}/>
+           <div style={{position:"absolute",top:"-100px",left:"50%",transform:"translateX(-50%)",width:600,height:400,background:"radial-gradient(ellipse, rgba(232,118,10,0.08) 0%, transparent 60%)",pointerEvents:"none"}}/>
 
            {/* Hero Content — Partner-first messaging */}
            <div style={{position:"relative",zIndex:2,textAlign:"center",padding:"60px 20px",maxWidth:720}}>
@@ -1108,6 +1108,12 @@ export default function AayojanApp(){
 
              <p style={{fontSize:12,color:"var(--text-muted)",marginTop:20,maxWidth:400,margin:"20px auto 0"}}>Founding partners get priority leads, verified badge & free-forever onboarding before public launch.</p>
            </div>
+         </div>
+
+         {/* ── SECTION DIVIDER — Customer area ─────────────────────────── */}
+         <div style={{textAlign:"center",padding:"32px 14px 0",position:"relative"}}>
+           <div style={{width:"100%",height:1,background:"var(--border-light)",position:"absolute",top:"50%",left:0}}/>
+           <span style={{position:"relative",background:"var(--bg-primary)",padding:"8px 20px",borderRadius:24,border:"1px solid var(--border-light)",fontSize:13,fontWeight:700,color:"var(--text-muted)",letterSpacing:0.5}}>👇 FOR CUSTOMERS</span>
          </div>
 
          {/* ── HOW IT WORKS — Interactive, sticky for users ──────────────── */}
