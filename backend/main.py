@@ -4,17 +4,41 @@ Serves as the AI brain for both the React landing page and Flutter app.
 """
 
 import os
+import time
+from collections import defaultdict
 from contextlib import asynccontextmanager
 from typing import Optional
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, field_validator
 
 from gemini_client import GeminiClient
 
 load_dotenv()
+
+
+# ─── Rate Limiter ─────────────────────────────────────────────────────────────
+class RateLimiter:
+    """Simple in-memory rate limiter per IP."""
+    def __init__(self, max_requests: int = 30, window_seconds: int = 60):
+        self.max_requests = max_requests
+        self.window = window_seconds
+        self.requests: dict[str, list[float]] = defaultdict(list)
+
+    def is_allowed(self, ip: str) -> bool:
+        now = time.time()
+        # Clean old entries
+        self.requests[ip] = [t for t in self.requests[ip] if now - t < self.window]
+        if len(self.requests[ip]) >= self.max_requests:
+            return False
+        self.requests[ip].append(now)
+        return True
+
+rate_limiter = RateLimiter(max_requests=30, window_seconds=60)
+chat_limiter = RateLimiter(max_requests=10, window_seconds=60)  # Stricter for AI endpoints
 
 
 @asynccontextmanager
@@ -35,15 +59,44 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS
-origins = os.getenv("CORS_ORIGINS", "http://localhost:5173,https://gouravchat.github.io,https://aayojanv1.github.io,https://aayojan.online,https://www.aayojan.online").split(",")
+# CORS — restricted to known origins only
+origins = os.getenv("CORS_ORIGINS", "https://aayojan.online,https://www.aayojan.online,https://aayojanv1.github.io").split(",")
+if os.getenv("ENV", "production") == "development":
+    origins.append("http://localhost:5173")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type", "Authorization"],
 )
+
+
+# ─── Security Middleware ──────────────────────────────────────────────────────
+@app.middleware("http")
+async def security_middleware(request: Request, call_next):
+    # Rate limiting
+    client_ip = request.headers.get("X-Forwarded-For", request.client.host).split(",")[0].strip()
+    
+    # Stricter limit for AI endpoints
+    if request.url.path.startswith("/api/chat") or request.url.path.startswith("/api/menu") or request.url.path.startswith("/api/price"):
+        if not chat_limiter.is_allowed(client_ip):
+            return JSONResponse(status_code=429, content={"detail": "Too many requests. Please wait a minute."})
+    else:
+        if not rate_limiter.is_allowed(client_ip):
+            return JSONResponse(status_code=429, content={"detail": "Too many requests. Please slow down."})
+    
+    response = await call_next(request)
+    
+    # Security headers
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    
+    return response
 
 
 # ─── Models ──────────────────────────────────────────────────────────────────
@@ -53,11 +106,34 @@ class ChatMessage(BaseModel):
     role: str  # "user" or "assistant"
     content: str
 
+    @field_validator("role")
+    @classmethod
+    def validate_role(cls, v):
+        if v not in ("user", "assistant"):
+            raise ValueError("role must be 'user' or 'assistant'")
+        return v
+
+    @field_validator("content")
+    @classmethod
+    def validate_content(cls, v):
+        if len(v) > 5000:
+            raise ValueError("message too long (max 5000 chars)")
+        return v.strip()
+
 
 class ChatRequest(BaseModel):
     messages: list[ChatMessage]
     system_prompt: Optional[str] = None
     session_id: Optional[str] = None
+
+    @field_validator("messages")
+    @classmethod
+    def validate_messages(cls, v):
+        if len(v) > 50:
+            raise ValueError("too many messages (max 50)")
+        if len(v) == 0:
+            raise ValueError("at least one message required")
+        return v
 
 
 class ChatResponse(BaseModel):
