@@ -1150,12 +1150,12 @@ export default function AayojanApp(){
            <div style={{position:"relative",zIndex:2,maxWidth:700,margin:"0 auto"}}>
              <div style={{textAlign:"center",marginBottom:24}}>
                <div style={{display:"inline-block",background:"rgba(255,107,53,0.15)",border:"1px solid rgba(255,107,53,0.4)",borderRadius:20,padding:"5px 16px",marginBottom:14}}>
-                 <span style={{fontSize:11,color:"#FF6B35",fontWeight:700,letterSpacing:1}}>👨‍🍳 FOR CATERERS</span>
+                 <span style={{fontSize:11,color:"#FF6B35",fontWeight:700,letterSpacing:1}}>👨‍🍳 BUILT FOR MID-TIER CATERERS</span>
                </div>
                <h2 style={{fontFamily:"'Playfair Display',Georgia,serif",fontSize:"clamp(24px,5vw,36px)",fontWeight:900,color:"#fff",lineHeight:1.2,marginBottom:10}}>
-                 Join Aayojan.<br/><span style={{color:"#FDE68A"}}>Zero Entry Barrier.</span>
+                 Great Food, But <span style={{color:"#FDE68A"}}>No Marketing Budget?</span>
                </h2>
-               <p style={{fontSize:14,color:"rgba(255,255,255,0.7)",maxWidth:500,margin:"0 auto"}}>We bring customers to your WhatsApp. You cook. That's it.</p>
+               <p style={{fontSize:14,color:"rgba(255,255,255,0.7)",maxWidth:520,margin:"0 auto"}}>You make amazing food — we make sure Newtown knows about it. No pamphlets, no Swiggy 30% cut. Just direct WhatsApp leads.</p>
              </div>
 
              {/* Two big stat cards */}
@@ -1172,9 +1172,9 @@ export default function AayojanApp(){
                </div>
              </div>
 
-             {/* Bullet points */}
+             {/* Bullet points — mid-tier pain points */}
              <div style={{display:"flex",flexWrap:"wrap",gap:12,justifyContent:"center",marginBottom:24}}>
-               {["📲 Leads on WhatsApp","⚡ 15-30 leads/month","🔓 No lock-in","🏆 First 10 partners: 0% forever"].map(t=>(
+               {["📲 Leads direct on WhatsApp","🚫 No Swiggy/Zomato 30% cut","🍽️ ₹200–800/plate sweet spot","🔓 No lock-in, no exclusivity","🏆 First 10 partners: 0% forever"].map(t=>(
                  <span key={t} style={{background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:24,padding:"8px 16px",fontSize:12,color:"rgba(255,255,255,0.85)",fontWeight:500}}>{t}</span>
                ))}
              </div>
