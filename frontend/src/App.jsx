@@ -1027,15 +1027,16 @@ export default function AayojanApp(){
       )}
 
       {/* ── Scrolling Announcement Ticker ──────────────────────────────── */}
-      <div style={{background:"linear-gradient(90deg,#c0392b,#e74c3c)",padding:"8px 0",overflow:"hidden",position:"relative"}}>
+      <div style={{background:"linear-gradient(90deg,#E8760A,#C95F08)",padding:"8px 0",overflow:"hidden",position:"relative"}}>
         <div style={{display:"flex",animation:"scrollRibbon 20s linear infinite",whiteSpace:"nowrap"}}>
           {[...Array(2)].map((_,i)=>(
             <div key={i} style={{display:"flex",gap:40,paddingRight:40}}>
-              <span style={{fontSize:12,color:"#fff",fontWeight:600}}>🎉 Food Tasting from ₹199</span>
               <span style={{fontSize:12,color:"#fff",fontWeight:600}}>📍 Serving Newtown, Salt Lake & Rajarhat</span>
               <span style={{fontSize:12,color:"#FDE68A",fontWeight:700}}>🔥 31+ Verified Caterers</span>
               <span style={{fontSize:12,color:"#fff",fontWeight:600}}>⚡ Free quotes in 48 hours</span>
               <span style={{fontSize:12,color:"#FDE68A",fontWeight:700}}>🚀 Now Onboarding Partner Caterers!</span>
+              <span style={{fontSize:12,color:"#fff",fontWeight:600}}>🎉 Food Tasting from ₹199</span>
+              <span style={{fontSize:12,color:"#FDE68A",fontWeight:700}}>💰 Just 3% commission — not 30%</span>
             </div>
           ))}
         </div>
@@ -1043,11 +1044,11 @@ export default function AayojanApp(){
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <header className="header-wrap" style={S.header}>
-        <button onClick={()=>{navigate("landing");resetApp();}} style={{background:"none",border:"none",cursor:"pointer",padding:0,display:"flex",alignItems:"center",gap:12}}>
-          <div style={{width:46,height:46,borderRadius:12,background:"linear-gradient(135deg,#c0392b,#e74c3c)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,boxShadow:"0 4px 12px rgba(192,57,43,0.3)"}}>🍛</div>
+        <button onClick={()=>{navigate("landing");resetApp();}} style={{background:"none",border:"none",cursor:"pointer",padding:0,display:"flex",alignItems:"center",gap:10}}>
+          <img src="/logo-aayojan-compact.svg" alt="Aayojan" style={{width:42,height:42,borderRadius:12}}/>
           <div>
-            <div style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:700,background:"linear-gradient(135deg,#c0392b,#e74c3c)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Aayojan</div>
-            <div style={{fontSize:10,color:"#9ca3af",marginTop:1}}>📍 Newtown, Salt Lake & Rajarhat</div>
+            <div style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:700,color:"#E8760A"}}>Aayojan</div>
+            <div style={{fontSize:10,color:"#7B634E",marginTop:1}}>📍 Newtown, Salt Lake & Rajarhat</div>
           </div>
         </button>
         <div className="header-right" style={{display:"flex",alignItems:"center",gap:8}}>
