@@ -183,7 +183,93 @@ Active থাকুন = More orders! 📈
 
 ---
 
-## 📋 PSYCHOLOGY USED IN THESE MESSAGES
+## 📘 MESSAGE 7 — Facebook Group Post (Caterer Enrollment Attention)
+
+**Post this in:** Newtown/Rajarhat/Salt Lake community groups, food business groups, caterer networks
+
+```
+🍽️ ATTENTION Caterers of Newtown, Rajarhat & Salt Lake! 🍽️
+
+আপনি কি catering business করেন? 
+Customers আপনাকে online-এ খুঁজে পাচ্ছে না?
+
+আমরা Aayojan (আয়োজন) — Newtown Kolkata-র প্রথম ও একমাত্র Catering Aggregator platform তৈরি করছি।
+
+🔥 এখনই FREE তে Register করুন:
+👉 https://aayojan.online/#partner-terms
+
+✅ যা পাচ্ছেন:
+• আপনার listing 100% FREE — চিরকাল
+• Customer সরাসরি WhatsApp-এ আসবে
+• কোনো app install নয় — সব WhatsApp-এই
+• মাত্র 3% commission — সেটাও order পেলে তবেই
+
+💰 হিসাব সোজা:
+মাসে 2টা extra order = ₹80,000+ additional revenue
+আপনার investment? = ₹0
+
+⚡ প্রথম 10 জন caterer সম্পূর্ণ FREE তে onboard হতে পারবেন!
+Slots সীমিত — first come first serve
+
+📱 জয়েন করতে WhatsApp করুন: 8088434425
+অথবা ভিজিট করুন: https://aayojan.online
+
+#Aayojan #CaterersNewtown #CateringKolkata #FoodBusiness #NewtownKolkata #FreeListing
+```
+
+---
+
+## 📘 MESSAGE 7B — Facebook Post (English Version — Premium Groups)
+
+```
+🍽️ CALLING ALL CATERERS — Newtown, Rajarhat & Salt Lake Area 🍽️
+
+Are you a caterer losing orders because customers can't find you online?
+
+We're Aayojan — Newtown Kolkata's FIRST & ONLY catering aggregator. Customers come to us daily looking for caterers for weddings, birthdays & house parties.
+
+🔥 Register FREE — Limited Slots Open:
+👉 https://aayojan.online/#partner-terms
+
+What you get:
+✅ Permanent FREE listing (₹0 forever)
+✅ Direct customer inquiries on WhatsApp
+✅ No app needed — everything on WhatsApp
+✅ Only 3% commission — and ONLY when you get paid
+
+💰 Simple math:
+2 extra orders/month × ₹400/plate × 100 guests = ₹80,000+ extra revenue
+Your investment? ZERO.
+
+⚡ First 10 caterers get onboarded completely FREE!
+Slots are limited — don't miss out.
+
+📱 WhatsApp "YES" to: 8088434425
+🌐 Visit: https://aayojan.online
+
+#Aayojan #CateringBusiness #NewtownKolkata #Caterers #FreeListing #FoodBusiness
+```
+
+---
+
+## 📱 MESSAGE 8 — WhatsApp Forward (Ask contacts to share in groups)
+
+```
+🙏 একটা ছোট সাহায্য চাই!
+
+আমরা Aayojan (aayojan.online) — Newtown-এ caterer দের help করছি বেশি order পেতে।
+
+আপনি কি কোনো caterer চেনেন Newtown/Rajarhat/Salt Lake area-তে?
+বা কোনো Facebook group-এ আছেন যেখানে caterers আছে?
+
+এই link টা share করুন please:
+👉 https://aayojan.online/#partner-terms
+
+অথবা তাদের আমার number দিন: 8088434425
+
+Thank you! 🙏
+— Suparna, Aayojan
+```
 
 | Technique | Where Used |
 |-----------|-----------|
