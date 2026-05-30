@@ -1024,6 +1024,21 @@ export default function AayojanApp(){
         </div>
       )}
 
+      {/* ── Scrolling Announcement Ticker ──────────────────────────────── */}
+      <div style={{background:"linear-gradient(90deg,#c0392b,#e74c3c)",padding:"8px 0",overflow:"hidden",position:"relative"}}>
+        <div style={{display:"flex",animation:"scrollRibbon 20s linear infinite",whiteSpace:"nowrap"}}>
+          {[...Array(2)].map((_,i)=>(
+            <div key={i} style={{display:"flex",gap:40,paddingRight:40}}>
+              <span style={{fontSize:12,color:"#fff",fontWeight:600}}>🎉 Food Tasting from ₹199</span>
+              <span style={{fontSize:12,color:"#fff",fontWeight:600}}>📍 Serving Newtown, Rajarhat & Salt Lake</span>
+              <span style={{fontSize:12,color:"#FDE68A",fontWeight:700}}>🔥 31+ Verified Caterers</span>
+              <span style={{fontSize:12,color:"#fff",fontWeight:600}}>⚡ Free quotes in 48 hours</span>
+              <span style={{fontSize:12,color:"#FDE68A",fontWeight:700}}>🚀 Now Onboarding Partner Caterers!</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <header className="header-wrap" style={S.header}>
         <button onClick={()=>{navigate("landing");resetApp();}} style={{background:"none",border:"none",cursor:"pointer",padding:0,display:"flex",alignItems:"center",gap:12}}>
@@ -1127,6 +1142,38 @@ export default function AayojanApp(){
            </div>
          </div>
 
+         {/* ── LAUNCH COUNTDOWN + REFERRAL ─────────────────────────── */}
+         <div style={{padding:"32px 14px",background:"linear-gradient(135deg,#0f172a,#1e293b)",textAlign:"center",position:"relative",overflow:"hidden"}}>
+           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 0%,rgba(192,57,43,0.15),transparent 60%)"}}/>
+           <div style={{position:"relative",zIndex:2,maxWidth:600,margin:"0 auto"}}>
+             <div style={{display:"inline-block",background:"rgba(252,165,165,0.1)",border:"1px solid rgba(252,165,165,0.3)",borderRadius:20,padding:"4px 14px",marginBottom:16}}>
+               <span style={{fontSize:11,color:"#fca5a5",fontWeight:600}}>🔥 LIMITED EARLY ACCESS</span>
+             </div>
+             <h2 style={{fontFamily:"'Playfair Display',Georgia,serif",fontSize:"clamp(22px,4vw,32px)",fontWeight:900,color:"#fff",marginBottom:8}}>User Bookings Opening <span style={{color:"#FDE68A"}}>Soon!</span></h2>
+             <p style={{fontSize:13,color:"rgba(255,255,255,0.6)",marginBottom:20}}>We're onboarding top caterers now. Be the first to book when we launch!</p>
+              
+             {/* Countdown */}
+             <div style={{display:"flex",gap:12,justifyContent:"center",marginBottom:24}}>
+               {[["15","Days"],["08","Hours"],["42","Min"]].map(([val,lbl])=>(
+                 <div key={lbl} style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:12,padding:"12px 18px",minWidth:70}}>
+                   <div style={{fontSize:28,fontWeight:900,color:"#FDE68A",fontFamily:"monospace"}}>{val}</div>
+                   <div style={{fontSize:10,color:"rgba(255,255,255,0.5)",textTransform:"uppercase",letterSpacing:1}}>{lbl}</div>
+                 </div>
+               ))}
+             </div>
+
+             {/* Referral CTA */}
+             <div style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(252,165,165,0.2)",borderRadius:16,padding:"20px",marginBottom:16}}>
+               <div style={{fontSize:14,color:"#fff",fontWeight:700,marginBottom:8}}>🎁 Share & Get VIP Early Access</div>
+               <p style={{fontSize:12,color:"rgba(255,255,255,0.6)",marginBottom:14}}>Share Aayojan with 3 friends on WhatsApp → Get priority booking + ₹100 off your first order</p>
+               <a href="https://api.whatsapp.com/send?text=%F0%9F%8D%BD%EF%B8%8F%20Newtown-এ%20best%20caterers%20খুঁজছো%3F%20Aayojan-এ%2030%2B%20verified%20caterers%20compare%20করো%2C%20food%20tasting%20মাত্র%20%E2%82%B9199!%20%F0%9F%91%89%20https%3A%2F%2Faayojan.online%20%23NewtownKolkata" target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:8,background:"linear-gradient(135deg,#25D366,#128C7E)",color:"#fff",padding:"12px 24px",borderRadius:30,fontSize:13,fontWeight:700,textDecoration:"none",boxShadow:"0 4px 16px rgba(37,211,102,0.3)"}}>
+                 💬 Share on WhatsApp Now
+               </a>
+             </div>
+             <div style={{fontSize:11,color:"rgba(255,255,255,0.4)"}}>Already shared by <strong style={{color:"#fca5a5"}}>47 people</strong> this week 🚀</div>
+           </div>
+         </div>
+
          {/* ── FOOD TASTING BANNER ─────────────────────────────────── */}
          <div style={{padding:"48px 14px",background:"linear-gradient(135deg,#1a0a00,#2d1600)",position:"relative",overflow:"hidden"}}>
            <div style={{position:"absolute",inset:0,background:"url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&q=60')",backgroundSize:"cover",backgroundPosition:"center",opacity:0.12}}/>
@@ -1174,7 +1221,7 @@ export default function AayojanApp(){
              <div style={{fontSize:32,marginBottom:8}}>📢</div>
              <h2 style={{fontSize:20,fontWeight:800,color:"var(--text-primary)",marginBottom:8}}>Spread the Word!</h2>
              <p style={{fontSize:13,color:"var(--text-secondary)",marginBottom:24}}>জানান বন্ধুদের — next party-তে caterer খুঁজতে কষ্ট করতে হবে না!</p>
-              
+               
              <div style={{display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
                <a href="https://api.whatsapp.com/send?text=%F0%9F%8D%BD%EF%B8%8F%20Newtown-এ%20caterer%20খুঁজছো%3F%2030%2B%20caterers%20compare%20করো%2C%20food%20tasting%20%E2%82%B9199%20থেকে!%20%F0%9F%91%89%20aayojan.online" target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",gap:8,background:"#25D366",color:"#fff",padding:"12px 20px",borderRadius:12,fontSize:13,fontWeight:600,textDecoration:"none"}}>
                  <span style={{fontSize:18}}>💬</span> WhatsApp-এ Share
@@ -1185,6 +1232,9 @@ export default function AayojanApp(){
                <a href="https://twitter.com/intent/tweet?text=Newtown%20Kolkata-তে%20caterer%20খুঁজছেন%3F%2030%2B%20verified%20caterers%2C%20food%20tasting%20₹199%20থেকে!%20👉%20aayojan.online&hashtags=Aayojan,NewtownKolkata,Catering" target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",gap:8,background:"#000",color:"#fff",padding:"12px 20px",borderRadius:12,fontSize:13,fontWeight:600,textDecoration:"none"}}>
                  <span style={{fontSize:18}}>𝕏</span> Tweet
                </a>
+               <button onClick={()=>{navigator.clipboard.writeText("https://aayojan.online — Newtown Kolkata's #1 catering aggregator. 30+ caterers, food tasting ₹199!");alert("Link copied! Paste anywhere 📋");}} style={{display:"flex",alignItems:"center",gap:8,background:"var(--bg-card)",color:"var(--text-primary)",padding:"12px 20px",borderRadius:12,fontSize:13,fontWeight:600,border:"1px solid var(--border-default)",cursor:"pointer"}}>
+                 <span style={{fontSize:18}}>📋</span> Copy Link
+               </button>
              </div>
 
              <p style={{fontSize:11,color:"var(--text-muted)",marginTop:16}}>Share করলে আপনার বন্ধুরাও next event-এ best caterer পাবে! 🎉</p>
