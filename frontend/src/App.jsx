@@ -1032,7 +1032,7 @@ export default function AayojanApp(){
           {[...Array(2)].map((_,i)=>(
             <div key={i} style={{display:"flex",gap:40,paddingRight:40}}>
               <span style={{fontSize:12,color:"#fff",fontWeight:600}}>📍 Serving Newtown, Salt Lake & Rajarhat</span>
-              <span style={{fontSize:12,color:"#FDE68A",fontWeight:700}}>🔥 31+ Verified Caterers</span>
+              <span style={{fontSize:12,color:"#FDE68A",fontWeight:700}}>🔥 7 Verified Founding Caterers</span>
               <span style={{fontSize:12,color:"#fff",fontWeight:600}}>⚡ Free quotes in 48 hours</span>
               <span style={{fontSize:12,color:"#FDE68A",fontWeight:700}}>🚀 Now Onboarding Partner Caterers!</span>
               <span style={{fontSize:12,color:"#fff",fontWeight:600}}>🎉 Food Tasting from ₹199</span>
@@ -1150,10 +1150,10 @@ export default function AayojanApp(){
          <div style={{padding:"40px 14px",background:"var(--bg-secondary)",overflow:"hidden"}}>
            <div style={{textAlign:"center",marginBottom:20}}>
              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:700,color:"var(--text-primary)"}}>Our Partner Caterers</h2>
-             <p style={{fontSize:12,color:"var(--text-muted)",marginTop:4}}>12+ verified caterers across Newtown, Salt Lake & Rajarhat</p>
+             <p style={{fontSize:12,color:"var(--text-muted)",marginTop:4}}>7 verified founding partners across Newtown, Salt Lake & Rajarhat</p>
            </div>
            <div className="caterer-scroll" style={{display:"flex",gap:16,paddingBottom:12,animation:"scrollRibbon 30s linear infinite",width:"max-content"}}>
-             {[...allCaterers.slice(0,8),...allCaterers.slice(0,8)].map((c,idx)=>(
+             {[...allCaterers.slice(0,7),...allCaterers.slice(0,7)].map((c,idx)=>(
                <div key={`${c.id}-${idx}`} style={{minWidth:150,background:"var(--bg-card)",border:"1px solid var(--border-light)",borderRadius:16,padding:"20px 16px",textAlign:"center",transition:"transform 0.2s",flexShrink:0}}>
                  <div style={{width:48,height:48,borderRadius:"50%",background:"var(--bg-accent-light)",border:"2px solid var(--border-accent)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,margin:"0 auto 10px"}}>{c.logo}</div>
                  <div style={{fontSize:12,fontWeight:700,color:"var(--text-primary)",marginBottom:3,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{c.name.split(" ").slice(0,2).join(" ")}</div>
