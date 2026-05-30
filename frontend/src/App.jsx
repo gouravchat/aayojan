@@ -1274,7 +1274,7 @@ export default function AayojanApp(){
               <div style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:700,color:"var(--text-primary)",marginBottom:8}}>আয়োজন</div>
               <p style={{fontSize:12,color:"var(--text-muted)",lineHeight:1.7,marginBottom:12}}>AI-powered catering platform for Newtown, Kolkata. Connecting you with the best caterers for every celebration.</p>
               <div style={{display:"flex",gap:12}}>
-                <a href="https://wa.me/919830012345?text=Hi%20Aayojan" target="_blank" rel="noopener noreferrer" style={{fontSize:20,textDecoration:"none"}}>💬</a>
+                <a href="https://wa.me/918088434425?text=Hi%20Aayojan" target="_blank" rel="noopener noreferrer" style={{fontSize:20,textDecoration:"none"}}>💬</a>
                 <a href="https://instagram.com/aayojan.online" target="_blank" rel="noopener noreferrer" style={{fontSize:20,textDecoration:"none"}}>📸</a>
                 <a href="mailto:hello@aayojan.online" style={{fontSize:20,textDecoration:"none"}}>✉️</a>
               </div>
@@ -2686,7 +2686,7 @@ export default function AayojanApp(){
       </footer>
 
       {/* Floating WhatsApp Button */}
-      <a href="https://wa.me/919830012345?text=Hi%20Aayojan!%20I%20need%20catering%20help" target="_blank" rel="noopener noreferrer" style={{position:"fixed",bottom:24,right:24,width:56,height:56,borderRadius:"50%",background:"#25D366",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(37,211,102,0.4)",zIndex:200,transition:"transform 0.2s",textDecoration:"none"}}>
+      <a href="https://wa.me/918088434425?text=Hi%20Aayojan!%20I%20need%20catering%20help" target="_blank" rel="noopener noreferrer" style={{position:"fixed",bottom:24,right:24,width:56,height:56,borderRadius:"50%",background:"#25D366",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(37,211,102,0.4)",zIndex:200,transition:"transform 0.2s",textDecoration:"none"}}>
         <span style={{fontSize:28}}>💬</span>
       </a>
 
